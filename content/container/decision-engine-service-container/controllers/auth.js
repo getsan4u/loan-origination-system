@@ -1291,6 +1291,64 @@ async function getUserPrivilegeCode(req, res, next) {
   }
 }
 
+async function findOrCreateUserPrivilegesAndRoles(req, res, next) {
+  try {
+    const UserPrivilege = periodic.datas.get('standard_userprivilege');
+    const UserRole = periodic.datas.get('standard_userrole');
+    const privileges_count = await UserPrivilege.model.countDocuments();
+    if (privileges_count === 0) {
+      const privileges = [
+        {
+          userprivilegeid: 103,
+          title: 'can view user pages',
+          name: 'can-view-user',
+        },
+        {
+          userprivilegeid: 102,
+          title: 'can view admin pages',
+          name: 'can-view-admin',
+        },
+        {
+          userprivilegeid: 101,
+          title: 'can view owner pages',
+          name: 'can-view-owner',
+        },
+      ];
+      const privileges_roles_map = {
+        '101': {
+          title: 'owner',
+          name: 'owner',
+          userroleid: 900,
+        },
+        '102': {
+          title: 'admin',
+          name: 'admin',
+          userroleid: 500,
+        },
+        '103': {
+          title: 'user',
+          name: 'user',
+          userroleid: 100,
+        },
+      };
+      const created_privileges = await UserPrivilege.model.insertMany(privileges);
+      if (created_privileges && created_privileges.length) {
+        const user_roles = created_privileges.map(privilege => {
+          const user_role = privileges_roles_map[ privilege.userprivilegeid ] || {};
+          if (user_role.title) {
+            user_role.privileges = [ privilege._id, ];
+          }
+          return user_role;
+        });
+        await UserRole.model.insertMany(user_roles);
+      }
+    }
+    next();
+  } catch (e) {
+    logger.warn('error in findOrCreateUserPrivilegesAndRoles', e);
+    next(e);
+  }
+}
 
 module.exports = {
   getUserPrivilegeCode,
@@ -1325,4 +1383,5 @@ module.exports = {
   adminOnly,
   handleControllerDataResponse,
   blockProtectedUsernames,
+  findOrCreateUserPrivilegesAndRoles,
 };

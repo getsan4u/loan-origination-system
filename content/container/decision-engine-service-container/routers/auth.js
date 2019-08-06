@@ -64,6 +64,7 @@ AuthRouter.get('/reset_token/:token', //pretransform puts token on the enter new
 
 AuthRouter.post('/organization/new',
   transformController.pretransform, //transform email to lowercase
+  authController.findOrCreateUserPrivilegesAndRoles,
   authController.checkOrgExists,
   authController.blockProtectedUsernames,
   userController.createUser,
