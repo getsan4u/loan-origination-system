@@ -1,0 +1,60 @@
+{
+  "containers":{
+    "/unauthenticated/home":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
+                "healthcheckStatus"
+              ]
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>TEST HOME PAGE :)</h1>"
+                      }
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Standard Documentation Page"
+                  },
+                  {
+                    "component": "RawOutput",
+                    "props": {
+                      "select": "userdata",  
+                      "type": "block"
+                    }  
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Home",
+        "navLabel":"Home"
+      }
+    }
+  }
+}
+

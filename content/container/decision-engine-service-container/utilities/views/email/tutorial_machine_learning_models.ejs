@@ -1,0 +1,64 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <p>Hi <%- user.first_name %>, </p>
+
+      <p>DigiFi's automated machine learning lets you easily train powerful predictive models that make accurate decisions, empowering you to leverage machine learning across your organization. No statistics expertise is required – we make complex work simple by automating the process.</p>
+
+      <p>Here's a brief tutorial to help you get started with AutoML on our platform. For the purpose of this tutorial, we're going to train a model that answers the following question:</p>
+
+      <p><b>What is the probability that a loan applicant won't repay their loan? (i.e. Predicting the probability of default)</b></p>
+
+      <p>You can download example historical data by clicking the "TUTORIAL" button on the "Model Training" tab.  This is a lending example that includes borrower information (such as their Credit Card Utilization, Credit Inquiries and Open Credit Accounts) and whether they defaulted on their loan (0 = No, 1 = Yes). This data can train a model that predicts the probability that a future borrower will default.</p>
+
+      <p>
+        <b>Model Training</b>
+        <ol>
+          <li>Click the TRAIN NEW MODEL button on the Models tab</li>
+          <li>Name your model “Sample ML Model”</li>
+          <li>Select “Binary Model” as the model type</li>
+          <li>Upload the sample data file when prompted to provide historical data</li>
+          <li>Click to train your model and wait until it finishes</li>
+        </ol>
+      </p>
+
+      <p>
+        <b>Model Evaluation & Selection</b>
+        <ol>
+          <li>Navigate to your model’s detail page by clicking the corresponding pencil icon</li>
+          <li>Select the model that is performing best on your data set, as indicated by the Accuracy Rate, Predictive Power and Resiliency</li>
+          <li>Save your selection</li>
+        </ol>
+      </p>
+
+      <p>
+        <b>Decision Making</b>
+        <ol>
+          <li>On the Processing, select your model and provide the following input data: accounts_opened: 6 | bankruptcies: 0 | collections: 3 | credit_history: 187 | credit_inquiries_last_6_months: 3 | judgements: 1 | past_due_accounts: 0 | open_accounts: 4 | card_utilization: 0.8746 | tax_liens: 1 | high_credit_limit: 39500 | annual_income: 55000 </li>
+          <li>Click the RUN MODEL button to view the model’s decision (the probability of borrower default)</li>
+        </ol>
+      </p>
+
+      <br>
+      <% const buttonLink = locals.protocol + locals.url + locals.basepath; %>
+      <% const buttonLabel = 'Sign In To DigiFi'; %>
+      <% include _button.ejs%>
+      <br>
+      
+      <p>You can repeat this process with your own historical data to train a proprietary ML model. If you have any questions, please feel welcome to contact DigiFi Support at support@digifi.io or (646) 663-3392.  We look forward to hearing from you!</p>
+    </td>
+  </tr>
+</table>
+
+<!-- body content -->
+<% include _add_space.ejs%>
+<% include _warm_regards_with_digifi.ejs%>
+<% include _styled_footer_with_unsub_from_support.ejs %>

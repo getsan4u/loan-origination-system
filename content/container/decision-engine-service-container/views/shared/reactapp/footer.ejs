@@ -1,0 +1,2385 @@
+<script type="text/javascript">
+<%-include('../../../../../../public/LivIconsEvo/js/jquery-1.12.3.min.js');%>
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" >
+  <%- locals.periodic.viewHelper.passObjToClient(locals.periodic.THEMESETTINGS.socketsettings, "socketsettings") %>
+  if (window.NodeList && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = function (callback, thisArg) {
+      thisArg = thisArg || window;
+      for (var i = 0; i < this.length; i++) {
+        callback.call(thisArg, this[ i ], i, this);
+      }
+    };
+  }
+  let socket = io(socketsettings.path);
+  socket.on('decisionProcessing', function (data) {
+    setTimeout(() => {
+      let newRows = (window.refFormContainer) ? window.refFormContainer.state.rows : window.refForm.state.rows;
+      newRows = newRows.map(row => {
+        let row_org = (row.organization && row.organization._id) ? row.organization._id.toString() : row.organization.toString();
+        if (row._id.toString() === data._id.toString() && row_org === data.organization.toString()) {
+          if (data.status === 'Complete' || data.progress === 100) row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), state: 'success', });
+          else if (data.status === 'Error') row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), state: 'error', });
+          else row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), });
+        }
+        return row;
+      });
+      (window.refFormContainer) ? window.refFormContainer.setState({ rows: newRows, }) : window.refForm.setState({ rows: newRows, });
+    }, 5000);
+  });
+
+  socket.on('machinelearning', function (data) {
+    setTimeout(() => {
+      let newRows = window.refFormContainer.state.rows;
+      let data_org_id = (data.organization._id) ? data.organization._id.toString() : data.organization.toString();
+      newRows = newRows.map(row => {
+        if (row._id.toString() === data._id.toString() && row.organization.toString() === data_org_id) {
+          if (data.status === 'Complete' || data.status === 'complete') row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), state: 'success', });
+          else if (data.status === 'Error') row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), state: 'error', });
+          else row.progressBar = Object.assign({}, row.progressBar, { progress: Math.round(data.progress), });
+        }
+        return row;
+      });
+      window.refFormContainer.setState({ rows: newRows, });
+    }, 1000);
+  });
+
+  socket.on('provider_ml', function (data) {
+    setTimeout(() => {
+      try {
+        let newRows = window.refFormContainer.state.rows;
+        let data_org_id = (data.organization._id) ? data.organization._id.toString() : data.organization.toString();
+        let progressBarMap = data.progressBarMap || {
+          'aws': 0,
+          'sagemaker_ll': 1,
+          'sagemaker_xgb': 2,
+        }
+        let progressBarindex = progressBarMap[data.provider];
+        newRows = newRows.map(row => {
+          if (data.model_complete) {
+            row.status = 'Complete';
+          } else if (data.model_failed) {
+            row.status = 'Failed';
+          } else {
+            let progressBar = (row.progressBar && row.progressBar.children && row.progressBar.children[progressBarindex] && row.progressBar.children[progressBarindex].children[1] && row.progressBar.children[progressBarindex].children[1].children && row.progressBar.children[progressBarindex].children[1].children[0]) ? row.progressBar.children[progressBarindex].children[1].children[0].props : null;
+            if (progressBar && row._id.toString() === data._id.toString() && row.organization.toString() === data_org_id) {
+              if (data.model_error) progressBar = Object.assign({}, progressBar, { percent: 100, error: true, indicating: false, progress: true, });
+              else if (data.status === 'Complete' || data.status === 'complete') progressBar = Object.assign({}, progressBar, { percent: Math.round(data.progress), indicating: false, });
+              else if (data.status === 'Error') progressBar = Object.assign({}, progressBar, { percent: Math.round(data.progress), error: true, });
+              else progressBar = Object.assign({}, progressBar, { percent: Math.round(data.progress), indicating: true });
+              row.progressBar.children[progressBarindex].children[1].children[0].props = progressBar;
+            }
+          }
+          return row;
+        });
+        window.refFormContainer.setState({ rows: newRows, });
+
+      } catch(e) {
+        console.log({ e });
+      }
+    }, 1000);
+  })
+
+  socket.on('sagemaker_ll', function (data) {
+
+  })
+
+  function runDataProcessing() {
+    let formgroups = window.refForm.props.formgroups;
+    setTimeout(() => {
+      formgroups.forEach((formgroup, i) => {
+        if (formgroup.formElements && formgroup.formElements[0] && formgroup.formElements[0].value && formgroup.formElements[0].value.children && formgroup.formElements[0].value.children[1]) {
+          new Array(100).fill(0).forEach((num) => {
+            setTimeout(() => {
+              formgroup.formElements[0].value.children[1].props.percent += 1;
+              window.refForm.setState({ formgroups: window.refForm.props.formgroups }, () => {   
+              });
+            }, i * 1000)
+          })
+        } else {
+          return;
+        }
+      })
+    }, 1000);
+  }
+  window.runDataProcessing = runDataProcessing;
+
+  function clearDataProcessing() {
+    let formgroups = window.refForm.props.formgroups;
+    if (formgroups) {
+      formgroups.forEach((formgroup, i) => {
+        if (formgroup.formElements && formgroup.formElements[0] && formgroup.formElements[0].value && formgroup.formElements[0].value.children && formgroup.formElements[0].value.children[1]) {
+          setTimeout(() => {
+            formgroup.formElements[0].value.children[1].props.percent = 0;
+            window.refForm.setState({ formgroups: window.refForm.props.formgroups }, () => {   
+            });
+          }, 0);
+          // new Array(100).fill(0).forEach((num) => {
+          //   setTimeout(() => {
+          //     formgroup.formElements[0].value.children[1].props.percent += 1;
+          //     window.refForm.setState({ formgroups: window.refForm.props.formgroups }, () => {   
+          //     });
+          //   }, i * 1000)
+          // })
+        } else {
+          return;
+        }
+      })
+    }
+  }
+  window.clearDataProcessing = clearDataProcessing;
+  
+  function globalBarSaveBtn() {
+    let submit = document.querySelector('.global-button-save');
+    let guide = document.querySelector('.global-guide-btn');
+    if (guide && submit) {
+      guide.insertAdjacentElement('beforebegin', submit);
+    }
+  }
+
+  function deleteRedirect() {
+    let currentPath = this.props.location.pathname.split('/');
+    let currentIndex = currentPath.pop();
+    let currentType = currentPath.pop();
+    let deletePath = this.props.onclickProps.split('/');
+    let deleteIndex = deletePath.pop().replace('?method=delete', '');
+    let deleteType = deletePath.pop() + '_segments';
+    let redirectURL = currentPath.join('/') + '/' + currentType + '/';
+    let endingURL;
+    if (deleteType === currentType) {
+      endingURL = (currentIndex < deleteIndex || (deleteIndex == 0 && currentIndex == 0))
+        ? currentIndex
+        : currentIndex - 1;
+    } else {
+      endingURL = currentIndex;
+    }
+    this.props.reduxRouter.push(redirectURL + endingURL);
+  }
+
+  function createCardModal() {
+    event.stopImmediatePropagation();
+    window.overlayProps.createModal({
+      title: this.props.onclickProps.title,
+      pathname: this.props.onclickProps.pathname,
+    })
+  }
+
+  function addRef(form) {
+    if (form) {
+      window.refForm = form;
+    }
+  }
+  window.addRef = addRef;
+
+  function redirect(res) {
+    if(window.ga && window.gaLocationChange) window.gaLocationChange();
+    if (typeof res === 'string') res = JSON.parse(res);
+    if (res.data && res.data.redirect || res.redirect) {
+      let redirect = (res.data && res.data.redirect) ? res.data.redirect : res.redirect;
+      let self = this;
+      window.setTimeout(function () {
+        if (!self.props.reduxRouter) window.overlayProps.hideModal('last');
+        window.overlayProps.reduxRouter.push(redirect);
+      }, 0);
+    }
+  }
+  window.redirect = redirect;
+
+  function emailVerifiedNotification() {
+    let query = window.location.href.split('?')[ 1 ];
+    if (query === 'email_verified=true') {
+      window.overlayProps.createNotification({
+        type: 'success',
+        text: 'Email verified successfully!',
+        timeout: 10000,
+      });
+    }
+    if (query === 'email_token=invalid') {
+      window.overlayProps.createNotification({
+        type: 'error',
+        text: 'Invalid email token!',
+        timeout: 10000,
+      });
+    }
+    if (query === 'email_token=expired') {
+      window.overlayProps.createNotification({
+        type: 'error',
+        text: 'Email token expired!',
+        timeout: 10000,
+      });
+    }
+  }
+  window.emailVerifiedNotification = emailVerifiedNotification;
+
+  function redirectLogin(err) {
+    let self = this;
+    let path = JSON.parse(err).pathname;
+    window.setTimeout(function () {
+      self.props.reduxRouter.push(path);
+    }, 0);
+  }
+  window.redirectLogin = redirectLogin;
+
+  function closeModalAndCreateNotification(obj) {
+    this.props.hideModal('last');
+    this.props.createNotification(obj);
+  }
+  window.closeModalAndCreateNotification = closeModalAndCreateNotification;
+
+  function hideModal(obj) {
+    this.props.hideModal('last');
+  }
+  window.hideModal = hideModal;
+
+  function hideModalandCreateNotificationandRefresh(obj) {
+    window.overlayProps.hideModal('last');
+    window.overlayProps.createNotification(obj);
+    window.overlayProps.refresh();
+  }
+  window.hideModalandCreateNotificationandRefresh = hideModalandCreateNotificationandRefresh;
+
+  function editFormSuccessCallback(options) {
+    window.overlayProps.createNotification(options);
+    window.overlayProps.refresh();
+  }
+  window.editFormSuccessCallback = editFormSuccessCallback;
+
+  function pushToNewRoute(options) {
+    window.overlayProps.createNotification(options);
+    window.overlayProps.reduxRouter.push(options.pathname);
+  }
+  window.pushToNewRoute = pushToNewRoute;
+
+  function phoneNumberFormatter() {
+    return [ '(', /[1-9]/, /\d/, /\d/, ')', '\u0020', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/ ];
+  }
+  window.phoneNumberFormatter = phoneNumberFormatter;
+
+  function populationOnChange(e) {
+    newVal = e.target.value.replace(/[^a-zA-Z\d]/g, '_').toLowerCase();
+    this.setState({ population_tags: newVal, });
+  }
+  window.populationOnChange = populationOnChange;
+
+  function hideHeader() {
+    document.querySelector('.Header-Speed').style.display = "none"
+  }
+  window.hideHeader = hideHeader;
+
+  function showHeader() {
+    document.querySelector('.Header-Speed').style.display = "initial"
+  }
+  window.showHeader = showHeader;
+
+  function rulesetTypeFilter(currState, formElementsQueue, formElement, prevState) {
+    if ((!currState.type && prevState.type) || (currState.type)) {
+      let hasRuleset = formElementExists(formElementsQueue, 'ruleset');
+      let hasConditionCheck = formElementExists(formElementsQueue, 'conditions_check');
+      if (!hasRuleset && !hasConditionCheck) {
+        formElementsQueue.push({
+          name: 'ruleset',
+          label: 'Select Rule Set',
+          type: 'dropdown',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          layoutProps: {
+          },
+        }, {
+            name: 'conditions_check',
+            label: 'Applicable Population',
+            type: 'dropdown',
+            errorIconRight: true,
+            validateOnChange:true,
+            errorIcon: 'fa fa-exclamation',
+            validIcon: 'fa fa-check',
+            passProps: {
+              selection: true,
+              fluid: true,
+              search: true,
+            },
+            value: 'all',
+            layoutProps: {
+            },
+            options: [ {
+              'label': 'Entire Population',
+              'value': 'all',
+            }, {
+              'label': 'Specific Population Segment',
+              'value': 'specific',
+            }, ],
+          });
+      }
+      return formElement;
+    } else {
+      return formElement;
+    }
+  }
+  window.rulesetTypeFilter = rulesetTypeFilter;
+
+  function selectRulesetFilter(currState, formElementsQueue, formElement, prevState) {
+    if ((!currState.type && prevState.type) || currState.type) {
+      let type = (!currState.type && prevState.type) ? prevState.type : currState.type;
+      formElement.options = prevState.__formOptions[ `${type}_ruleset` ];
+      return formElement;
+    } else {
+      return false;
+    }
+  }
+  window.selectRulesetFilter = selectRulesetFilter;
+
+  function applicablePopulationFilter(currState, formElementsQueue, formElement, prevState) {
+    if ((!currState.type && prevState.type) || currState.type) {
+      let hasProp = formElementExists(formElementsQueue, 'conditions');
+      if ((!currState.conditions_check && prevState.conditions_check && prevState === 'specific') || (currState.conditions_check && currState.conditions_check === 'specific') && !hasProp) {
+        formElementsQueue.push({
+          name: 'conditions',
+          label: 'Select Population Rule Set',
+          type: 'dropdown',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          layoutProps: {
+          },
+        });
+      }
+      return formElement;
+    } else {
+      return false;
+    }
+  }
+  window.applicablePopulationFilter = applicablePopulationFilter;
+
+  function selectPopulationFilter(currState, formElementsQueue, formElement, prevState) {
+    if (((!currState.type && prevState.type) || currState.type) && ((!currState.conditions_check && prevState.conditions_check && prevState === 'specific') || (currState.conditions_check && currState.conditions_check === 'specific'))) {
+      let type = (!currState.type && prevState.type) ? prevState.type : currState.type;
+      formElement.options = prevState.__formOptions[ `${type}_conditions` ];
+      return formElement;
+    } else {
+      return false;
+    }
+  }
+  window.selectPopulationFilter = selectPopulationFilter;
+
+  function addComparisonSet(target, e) {
+    let dynamicCard = window.refFormContainer.props.formgroups.find(i => i.card && i.card.props && i.card.props.cardTitle === "Results Selection")
+    if (dynamicCard && dynamicCard.formElements.length < 10) {
+      let length = dynamicCard.formElements.length;
+      dynamicCard.formElements.push({
+        // label: `Comparison Rule Set ${length - 1}`,
+        name: `set.${length}`,
+        type: 'dropdown',
+        errorIconRight: true,
+        validateOnChange: true,
+        errorIcon: 'fa fa-exclamation',
+        validIcon: 'fa fa-check',
+        passProps: {
+          selection: true,
+          fluid: true,
+          search: true,
+        },
+        layoutProps: {
+        },
+      })
+    }
+    window.refFormContainer.setState({});
+  }
+  window.addComparisonSet = addComparisonSet;
+
+  var addSimulationSummaryTableRef = function (table) {
+    window.simulationSummaryTable = table;
+  }
+
+  window.addSimulationSummaryTableRef = addSimulationSummaryTableRef;
+
+  function resetComparisonSets() {
+    if (window.refFormContainer && window.refFormContainer.props.formgroups && window.refFormContainer.props.formgroups[ 2] && window.refFormContainer.props.formgroups[ 2].formElements && window.refFormContainer.props.formgroups[ 2].formElements.length > 1) {
+      window.refFormContainer.props.formgroups[ 2].formElements = [ {
+        label: ' ',
+        name: 'set.0',
+        type: 'dropdown',
+        errorIconRight: true,
+        validateOnChange: true,
+        errorIcon: 'fa fa-exclamation',
+        validIcon: 'fa fa-check',
+        passProps: {
+          selection: true,
+          fluid: true,
+          search: true,
+        },
+        layoutProps: {
+        },
+      }]
+    }
+    window.refFormContainer.setState({ navbar: {} });
+  }
+  window.resetComparisonSets = resetComparisonSets;
+
+  function submitInitialSimulationForm() {
+      window.refFormContainer.submitForm();
+      window.refFormContainer.setState({init: false})
+  }
+  window.submitInitialSimulationForm = submitInitialSimulationForm;
+
+  function addSimulationRef(formContainer) {
+    window.refFormContainer = formContainer;
+  }
+  window.addSimulationRef = addSimulationRef;
+
+  function addOptimizationRef(formContainer) {
+    window.refFormContainer = formContainer;
+  }
+  window.addOptimizationRef = addOptimizationRef;
+
+   function addMLRef(formContainer) {
+    window.refFormContainer = formContainer;
+  }
+  window.addOptimizationRef = addOptimizationRef;
+
+  function submitInitialOptimizationForm() {
+      window.refFormContainer.submitForm();
+      window.refFormContainer.setState({init: false})
+  }
+  window.submitInitialOptimizationForm = submitInitialOptimizationForm;
+
+  function addRefToSimulationResult(result_container) {
+    if (result_container.props && result_container.props.cardTitle && result_container.props.cardTitle === "Summary") {
+      window.simulationTable = result_container;
+    } else {
+      window.simulationChart = result_container;
+    }
+    // window.refResultContainer = result_container;
+  }
+  window.addRefToSimulationResult = addRefToSimulationResult;
+
+  function checkPopulation(target, e) {
+    if (target.has_population === 'on' && document.querySelectorAll('.population_rules')[ 0 ]) {
+      setTimeout(() => {
+        document.querySelectorAll('.population_rules')[ 0 ].style.display = ''
+        // document.querySelectorAll('.add_segment_button')[0].style.display = 'inline-block'
+      }, 0)
+    }
+    else {
+      if (document.querySelectorAll('.population_rules')[ 0 ]) {
+        setTimeout(() => {
+          document.querySelectorAll('.population_rules')[ 0 ].style.display = 'none';
+          // document.querySelectorAll('.add_segment_button')[0].style.display = 'none'
+        }, 0)
+      }
+    }
+  }
+  window.checkPopulation = checkPopulation;
+
+  function checkVariableSystemName(target, e) {
+    if (target.has_variable_system_name === 'on' && document.querySelectorAll('.variable_system_name')[ 0 ]) {
+      setTimeout(() => {
+        document.querySelectorAll('.variable_system_name')[ 0 ].style.display = ''
+        // document.querySelectorAll('.add_segment_button')[0].style.display = 'inline-block'
+      }, 0)
+    }
+    else {
+      if (document.querySelectorAll('.variable_system_name')[ 0 ]) {
+        setTimeout(() => {
+          document.querySelectorAll('.variable_system_name')[ 0 ].style.display = 'none';
+          // document.querySelectorAll('.add_segment_button')[0].style.display = 'none'
+        }, 0)
+      }
+    }
+  }
+  window.checkVariableSystemName = checkVariableSystemName;
+
+  function cleanVariableSystemName(currState, updatedStateProp){
+    this.setState({
+      variable_system_name: updatedStateProp.variable_system_name.replace(/[^a-z_]/g, ''),
+    })
+  }
+  window.cleanVariableSystemName = cleanVariableSystemName;
+
+  function hideVariableSystemName() {
+    if (document.querySelectorAll('.variable_system_name')[ 0 ]) {
+      document.querySelectorAll('.variable_system_name')[ 0 ].style.display = 'none';
+    }
+  }
+
+  window.hideVariableSystemName = hideVariableSystemName;
+
+  function checkPopulationRulesExists() {
+    if (window.refForm && window.refForm.props.formdata && window.refForm.props.formdata && window.refForm.props.formdata.conditions.length && document.querySelectorAll('.population_rules')[ 0 ]) {
+      document.querySelectorAll('.population_rules')[ 0 ].style.display = '';
+    } else {
+      if (document.querySelectorAll('.population_rules')[ 0 ]) {
+        document.querySelectorAll('.population_rules')[ 0 ].style.display = 'none';
+      }
+    }
+  }
+
+  window.checkPopulationRulesExists = checkPopulationRulesExists;
+
+  function handleRowUpdate(formElement, rows) {
+    let name = 'updated_' + formElement.name;
+    let prevRows = this.props.formdata[ formElement.name ];
+    this.setState({ [ name ]: rows }, () => {
+      let changed = false;
+      prevRows.forEach((prevRow, i) => {
+        if (rows[ i ]._id !== prevRow._id) changed = true;
+      })
+      if (formElement.submitOnChange && changed) {
+        this.submitForm.call(this);
+      }
+    });
+  }
+  window.handleRowUpdate = handleRowUpdate;
+
+  function handleModuleRunOrderUpdate(formElement, rows) {
+    let name = 'updated_' + formElement.name;
+    let prevRows = this.props.formdata[ formElement.name ];
+    this.setState({ [ name ]: rows }, () => {
+      let changed = false;
+      prevRows.forEach((prevRow, i) => {
+        if (rows[ i ].module_index !== prevRow.module_index) changed = true;
+      })
+      if (formElement.submitOnChange && changed) {
+        this.submitForm.call(this);
+      }
+    });
+  }
+  window.handleModuleRunOrderUpdate = handleModuleRunOrderUpdate;
+
+  function closeModalAndCreateNew(obj) {
+    this.props.hideModal('last');
+    setTimeout(() => {
+      window.overlayProps.createModal({
+        title: this.props.onclickProps.title,
+        pathname: this.props.onclickProps.pathname.replace(':id', this.props.onclickPropObject._id),
+      })
+    }, 0)
+  }
+  window.closeModalAndCreateNew = closeModalAndCreateNew;
+
+  function closeModalAndCreateRuleForm(obj) {
+    this.props.hideModal('last');
+    this.props.setDynamicData('init_rule_data', obj);
+    setTimeout(() => {
+      window.overlayProps.createModal({
+        title: obj.modalTitle,
+        pathname: obj.modalPathname,
+        init_rule_data: obj,
+      })
+    }, 0)
+  }
+  window.closeModalAndCreateRuleForm = closeModalAndCreateRuleForm;
+
+  function closeModalAndCreateNewModal(obj) {
+    this.props.hideModal('last');
+    setTimeout(() => {
+      window.overlayProps.createModal({
+        title: obj.title,
+        pathname: obj.pathname,
+      })
+    }, 0)
+  }
+  window.closeModalAndCreateNewModal = closeModalAndCreateNewModal;
+
+  function createDecisionModuleEditModal(obj) {
+    const MODULE_TYPE_MAP = {
+      'requirements': 'Requirements Rules',
+      'calculations': 'Calculation Scripts',
+      'dataintegration': 'Data Integration',
+      'assignments': 'Simple Outputs',
+      'output': 'Rule-Based Outputs',
+      'scorecard': 'Scoring Model',
+      'artificialintelligence': 'Artificial Intelligence',
+      'documentocr': 'Document OCR',
+      'population': 'Population',
+    };
+    if(obj.data){
+      obj.data.display_module_type = MODULE_TYPE_MAP[obj.data.type]
+    }
+    this.props.setDynamicData('decision_module_data', obj);
+    setTimeout(() => {
+      window.overlayProps.createModal({
+        title: obj.title,
+        pathname: obj.pathname,
+      })
+    }, 0)
+  }
+  window.createDecisionModuleEditModal = createDecisionModuleEditModal;
+
+  function switchRequestFormat(evt) {
+    if (evt.product) {
+      switch(evt.product) {
+        case 'text_recognition':
+          window.refForm.props.formgroups[2].gridProps.style = { display: 'block', };
+          window.refForm.props.formgroups[3].gridProps.style = { display: 'none', };
+          window.refForm.props.formgroups[4].gridProps.style = { display: 'none', };
+          window.refForm.props.validations[2] = {
+            'name': 'templates',
+            'constraints': {
+              'templates': {
+                'presence': {
+                  'message': '^Please select a template.',
+                },
+              },
+            },
+          };
+          break;
+        case 'machine_learning': 
+          window.refForm.props.formgroups[2].gridProps.style = { display: 'none', };
+          window.refForm.props.formgroups[3].gridProps.style = { display: 'block', };
+          window.refForm.props.formgroups[4].gridProps.style = { display: 'none', };
+          window.refForm.props.formgroups[5].gridProps.style = { display: 'block', };
+          window.refForm.props.validations[2] = {
+            'name': 'models',
+            'constraints': {
+              'models': {
+                'presence': {
+                  'message': '^Please select a model.',
+                },
+              },
+            },
+          };
+          window.refForm.props.validations[3] = {
+            'name': 'type',
+            'constraints': {
+              'type': {
+                'presence': {
+                  'message': '^Please select a type.',
+                },
+              },
+            },
+          };
+          break;
+        case 'rules_engine':
+          window.refForm.props.formgroups[2].gridProps.style = { display: 'none', };
+          window.refForm.props.formgroups[3].gridProps.style = { display: 'none', };
+          window.refForm.props.formgroups[4].gridProps.style = { display: 'block', };
+          window.refForm.props.formgroups[5].gridProps.style = { display: 'block', };
+          window.refForm.props.validations[3] = {
+            'name': 'type',
+            'constraints': {
+              'type': {
+                'presence': {
+                  'message': '^Please select a type.',
+                },
+              },
+            },
+          };
+          break;
+      }
+    }
+    if (evt.format) {
+      switch(evt.format) {
+        case 'xml': 
+          window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:format|json/, 'xml');
+          break;
+        case 'json': 
+          window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:format|xml/, 'json');
+          break;
+      }
+    }
+    if (evt.type) {
+      switch(evt.type) {
+        case 'individual': 
+          window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:type|batch/, 'individual');
+          break;
+        case 'batch': 
+          window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:type|individual/, 'batch');
+          break;
+      }
+    }
+    if (evt.product === 'text_recognition' && evt.templates) {
+      window.refForm.props.formgroups[ 5 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 5 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:product|machine_learning|rules_engine/, 'text_recognition');
+      // let url = window.refForm.props.formgroups[ 5 ].formElements[ 0 ].value.props.onclickBaseUrl;
+      // let newUrl =  url.split('/');
+      // newUrl.pop();
+      // newUrl.push(evt.templates);
+      // window.refForm.props.formgroups[ 5 ].formElements[ 0 ].value.props.onclickBaseUrl = newUrl.join('/');
+    } else if (evt.product === 'machine_learning' && evt.models) {
+      window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:product|text_recognition|rules_engine/, 'machine_learning');
+      window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:id/, evt.models);
+    } else if (evt.product === 'rules_engine' && evt.strategies) {
+      window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl =  window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:product|text_recognition|machine_learning/, 'rules_engine');
+      window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl = window.refForm.props.formgroups[ 6 ].formElements[ 0 ].value.props.onclickBaseUrl.replace(/:id/, evt.strategies);
+    }
+  }
+  window.switchRequestFormat = switchRequestFormat;
+  
+  function switchResponseFormat(evt) {
+    let hiddenFields = {};
+    if (window.refForm.props && window.refForm.props.hiddenFields) {
+      window.refForm.props.hiddenFields.forEach(field => {
+        hiddenFields[ field.form_name ] = field.form_static_val
+      })
+    };
+    if (evt.format === 'xml') {
+      window.refForm.props.formgroups[ 2 ].formElements[ 0 ].value.props.onclickBaseUrl = `/api/download_response/xml/${hiddenFields.client_id}`;
+    } else {
+      window.refForm.props.formgroups[ 2 ].formElements[ 0 ].value.props.onclickBaseUrl = `/api/download_response/json/${hiddenFields.client_id}`;
+    }
+  }
+  window.switchResponseFormat = switchResponseFormat;
+
+  function addOnClickDownloadRequestLink() {
+    document.querySelector('.downloadRequestLink').addEventListener('click', evt => {
+      evt.preventDefault();
+      window.refForm.validateFormElement({ formElement: { name: 'product'}});
+      window.refForm.validateFormElement({ formElement: { name: 'format'}});
+      window.refForm.validateFormElement({ formElement: { name: 'templates'}});
+      window.refForm.validateFormElement({ formElement: { name: 'models'}});
+      window.refForm.validateFormElement({ formElement: { name: 'strategies'}});
+      if (!Object.keys(window.refForm.state.formDataErrors).length) {
+        window.overlayProps.hideModal('last');
+        window.location = evt.target.href;
+      }
+    });
+  }
+  window.addOnClickDownloadRequestLink = addOnClickDownloadRequestLink;
+  
+  function addOnClickDownloadResponseLink() {
+    let hiddenFields = {};
+    if (window.refForm.props && window.refForm.props.hiddenFields) {
+      window.refForm.props.hiddenFields.forEach(field => {
+        hiddenFields[ field.form_name ] = field.form_static_val
+      })
+    };
+    document.querySelector('.downloadResponseLink > a').href = `/api/download_response/json/${hiddenFields.client_id}`;
+    document.querySelector('.downloadResponseLink').addEventListener('click', () => {
+      window.overlayProps.hideModal('last');
+    });
+  }
+  window.addOnClickDownloadResponseLink = addOnClickDownloadResponseLink;
+
+  function moduleTypeOnChange(formElement, event) {
+    setTimeout(() => {
+      if (document.querySelectorAll('.module_type_dropdown.selection div')[ 0 ].innerText) {
+        let type = document.querySelectorAll('.module_type_dropdown.selection div')[ 0 ].innerText;
+        let moduleMap = {
+          Requirements: {
+            name: 'Requirements',
+            description: 'Rules that must pass for the overall process to pass.'
+          },
+          Output: {
+            name: 'Output',
+            description: 'Rules that produce outputs from the automated process.'
+          },
+          Scorecard: {
+            name: 'Scorecard',
+            description: 'Rules that combine to generate a custom scorecard.'
+          },
+          Calculations: {
+            name: 'Calculations',
+            description: 'The calculation of additional custom variables.'
+          },
+        };
+        document.querySelectorAll('.module_name_placeholder input')[ 0 ].placeholder = moduleMap[ type ].name;
+        document.querySelectorAll('.module_description_placeholder input')[ 0 ].placeholder = moduleMap[ type ].description;
+      }
+    }, 0)
+  }
+  window.moduleTypeOnChange = moduleTypeOnChange;
+
+  function nameOnChange(e, formElement) {
+   newVal = e.target.value.replace(/[^a-zA-Z\d\s\_]/g, '');
+    this.setState({ [ formElement.name ]: newVal, });
+  }
+  window.nameOnChange = nameOnChange;
+
+  function variableNameOnChange(e, formElement) {
+    let original = e.target.value;
+    let cleaned = '';
+    let numberSafe = false;
+    for(let i = 0; i < original.length; i++){
+      let charCode = original.charCodeAt(i);
+      let isDigit = (charCode >= 48 && charCode <= 57);
+      let isUnderScore = (charCode === 95);
+      let isSpace = (charCode === 32);
+      let isAlphabet = ((charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122));
+      if(!numberSafe && isDigit) continue;
+      if(!isDigit && !isUnderScore && !isAlphabet && !isSpace) continue;
+      if(isAlphabet || isUnderScore) numberSafe = true;
+      cleaned += original[i];
+    }
+    this.setState({ [ formElement.name ]: cleaned, });
+  }
+  window.variableNameOnChange = variableNameOnChange;
+
+  function setHeaders() {
+    window.overlayProps.settings.userprofile.options.headers[ 'Content-Type' ] = 'application/json';
+  }
+  window.setHeaders = setHeaders;
+
+  const chartPercentageFormatter = function (ticker) {
+    return window.__reactapp.__ra_helpers.numeral(ticker).format('0%')
+  }
+  window.chartPercentageFormatter = chartPercentageFormatter;
+
+  const chartAreaPercentageFormatter = function (ticker) {
+    return window.__reactapp.__ra_helpers.numeral(ticker).format('0.000')
+  }
+  window.chartAreaPercentageFormatter = chartAreaPercentageFormatter;
+
+  const chartCountFormatter = function (ticker) {
+    if(window.__reactapp.__ra_helpers.numeral(ticker).value() % 1 !== 0){
+      return window.__reactapp.__ra_helpers.numeral(ticker).format('0,0.00')
+    } else{
+      return window.__reactapp.__ra_helpers.numeral(ticker).format('0,0')
+    }
+  };
+  window.chartCountFormatter = chartCountFormatter;
+
+  const explainabilityChartCountFormatter = function (ticker) {
+    if(window.__reactapp.__ra_helpers.numeral(ticker).value() % 1 !== 0){
+      return window.__reactapp.__ra_helpers.numeral(ticker).format('0,0.0000')
+    } else{
+      return window.__reactapp.__ra_helpers.numeral(ticker).format('0,0')
+    }
+  };
+  window.explainabilityChartCountFormatter = explainabilityChartCountFormatter;
+
+  const chartMetricsFormatter = function (ticker) {
+    return window.__reactapp.__ra_helpers.numeral(ticker).format('0,0')
+  };
+  window.chartMetricsFormatter = chartMetricsFormatter;
+
+  const chartDollarFormatter = function (ticker) {
+    return window.__reactapp.__ra_helpers.numeral(ticker).format('$0,0')
+  }
+  window.chartDollarFormatter = chartDollarFormatter;
+
+  const tooltipItemSorter = function (a, b) {
+    try {
+      return a - b;
+      // let sorted_order = this.props.getState().dynamic.responseChartData.initData.yList;
+      // return sorted_order.indexOf(a.name) - sorted_order.indexOf(b.name);
+    } catch (e) {
+      return a - b;
+    }
+  }
+  window.tooltipItemSorter = tooltipItemSorter;
+
+  function selectTestCases() {
+    let specific_cases = document.querySelector('.specific_cases');
+    let population = document.querySelector('.population');
+    let all_testcases = document.querySelector('.all_testcases');
+    let testcases_dropdown = document.querySelector('.testcases_dropdown');
+    let population_dropdown = document.querySelector('.population_dropdown');
+    if (specific_cases.checked) {
+      population_dropdown.style.display = 'none';
+      testcases_dropdown.style.display = 'block';
+      testcases_dropdown.style.marginBottom = '20px';
+    } else if (population.checked) {
+      population_dropdown.style.display = 'block';
+      testcases_dropdown.style.display = 'none';
+      population_dropdown.style.marginBottom = '20px';
+    } else if (all_testcases.checked) {
+      population_dropdown.style.display = 'none';
+      testcases_dropdown.style.display = 'none';
+    }
+  }
+  window.selectTestCases = selectTestCases;
+
+  function concatNodeLists(listone, listtwo){
+    listone = Array.prototype.slice.call(listone) || [];
+    listtwo = Array.prototype.slice.call(listtwo)|| [];
+    return listone.concat(listtwo);
+  }
+
+  function selectTestCasesForSimulation(formdata, second) {
+    let processing_csv_template =  document.querySelector('.processing_csv_template');
+    let module_on = [];
+    let module_off = [];
+    module_on = document.querySelectorAll('.simulation_module_switches_file') || [];
+    module_off = concatNodeLists(document.querySelectorAll('.simulation_module_switches_specific'), document.querySelectorAll('.simulation_module_switches_population'));
+    let categoryMap = {
+      'dataintegration': 1,
+      'artificialintelligence': 2,
+      'email': 3,
+      'textmessage': 4,
+    };
+    let textMap = {
+      'dataintegration': {
+        on: 'The process will gather new data',
+        off: 'The process will not gather new data',
+      },
+      'artificialintelligence': {
+        on: 'The process will run machine learning models',
+        off: 'The process will not run machine learning models',
+      }, 
+      'email': {
+        on: 'The process will send emails',
+        off: 'The process will not send emails',
+      },
+      'textmessage': {
+        on: 'The process will send text messages',
+        off: 'The process will not send text messages',
+      },
+    };
+    setTimeout(() => {
+      ['dataintegration', 'artificialintelligence', 'email', 'textmessage'].forEach(category => {
+        if (document.querySelectorAll(`.file_${category}_switch.rc-switch-checked`) && document.querySelectorAll(`.file_${category}_switch.rc-switch-checked`).length) {
+          document.querySelectorAll('.simulation_module_switches_file')[categoryMap[category]].childNodes[0].childNodes[2].innerHTML = textMap[category].on;
+        } else if (document.querySelectorAll(`.file_${category}_switch.rc-switch`) && document.querySelectorAll(`.file_${category}_switch.rc-switch`).length) {
+          document.querySelectorAll('.simulation_module_switches_file')[categoryMap[category]].childNodes[0].childNodes[2].innerHTML = textMap[category].off;
+        }
+      })
+    }, 0)
+    for(let i =0; i < module_on.length ; i++){
+      module_on[i].style.display = 'block';
+        if(i && i +1 === module_on.length){
+          module_on[module_on.length-1].style.marginBottom = '20px';
+        }
+    }
+    for(let j =0; j < module_off.length ; j++){
+      module_off[j].style.display = 'none';
+    }
+  }
+  window.selectTestCasesForSimulation = selectTestCasesForSimulation;
+
+  let currentSimulationIndex = null;
+
+  function setSimulationObserver() {
+    let navWrapper = document.querySelector('.dynamic-simulation');
+    if(navWrapper){
+      var config = { childList: true, subtree: true };
+      var callback = function (mutationsList) {
+        setActiveNavLink(navWrapper);
+      };
+      var observer = new MutationObserver(callback);
+      observer.observe(navWrapper, config);
+    }
+  }
+  window.setSimulationObserver = setSimulationObserver;
+
+  function setOptimizationObserver() {
+    setTimeout(() => {
+      let navWrapper = document.querySelector('.dynamic-optimization');
+      if(navWrapper){
+        var config = { childList: true, subtree: true };
+        var callback = function (mutationsList) {
+          setActiveNavLink(navWrapper);
+        };
+        var observer = new MutationObserver(callback);
+        if(navWrapper && config){
+          observer.observe(navWrapper, config);
+        }
+      }
+    }, 0)
+  }
+  window.setOptimizationObserver = setOptimizationObserver;
+
+  function setActiveNavLink(navWrapper) {
+    let links = navWrapper.querySelectorAll('.nav-link');
+    if (currentSimulationIndex) {
+      links[0].classList.remove("active-nav-link");
+      links[currentSimulationIndex].classList.add("active-nav-link");
+    }
+  }
+
+  function simulationNavOnClick (buttonProp) {
+    window.refFormContainer.props.setDynamicData('simulationdata', {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+    currentSimulationIndex = buttonProp.simulation_index;
+  }
+  window.simulationNavOnClick = simulationNavOnClick;
+
+  function optimizationNavOnClick (buttonProp) {
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}data`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp,}, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+    currentSimulationIndex = buttonProp.optimization_index;
+  }
+  window.optimizationNavOnClick = optimizationNavOnClick;
+
+  function submitOptimizationAnalysis(){
+    if(window.refFormContainer.state.navbar && window.refFormContainer.state.navbar.component){
+      setTimeout(() => {
+          window.refFormContainer.setState({navbar: {}}, () => {
+            window.refFormContainer.submitForm();
+          })
+      }, 0);
+    } else{
+      setTimeout(() => {
+          window.refFormContainer.setState({navbar: {}}, () => {
+            window.refFormContainer.submitForm();
+          })
+      }, 0);
+    }
+    currentSimulationIndex = null;
+  }
+  window.submitOptimizationAnalysis = submitOptimizationAnalysis;
+
+  function simulationMetricDropdownOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {metric: dropdown.value});
+    window.refFormContainer.props.setDynamicData('simulationdata', {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.simulationMetricDropdownOnClick = simulationMetricDropdownOnClick;
+
+  function optimizationDataSourceDropdownOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {data_source_type: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationDataSourceDropdownOnClick = optimizationDataSourceDropdownOnClick;
+  
+  function optimizationAdvanceMetricsOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {metric: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationAdvanceMetricsOnClick = optimizationAdvanceMetricsOnClick;
+
+  function optimizationRegressionPlotOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {regressionPlot: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationRegressionPlotOnClick = optimizationRegressionPlotOnClick;
+
+  function optimizationConfidenceIntervalOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {confidenceInterval: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationConfidenceIntervalOnClick = optimizationConfidenceIntervalOnClick;
+  
+  function optimizationDistributionChartTypeOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {chart_type: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationDistributionChartTypeOnClick = optimizationDistributionChartTypeOnClick;
+
+  function MLAccuracyRateChartTypeFilterOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {chart_type: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+    // setTimeout(() => {
+    //   window.refFormContainer.setState({ chart_type: dropdown.value, }, () => {
+    //     console.log(window.refFormContainer.state);
+    //     window.refFormContainer.submitForm();
+    //   })
+    // }, 0);
+  }
+  window.MLAccuracyRateChartTypeFilterOnClick = MLAccuracyRateChartTypeFilterOnClick;
+  
+  function MLBatchTypeDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {batch_type: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+    // setTimeout(() => {
+    //   window.refFormContainer.setState({ chart_type: dropdown.value, }, () => {
+    //     console.log(window.refFormContainer.state);
+    //     window.refFormContainer.submitForm();
+    //   })
+    // }, 0);
+  }
+  window.MLBatchTypeDropdownOnClick = MLBatchTypeDropdownOnClick;
+
+  function MLProviderTypeOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {provider: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLProviderTypeOnDropdownClick = MLProviderTypeOnDropdownClick;
+  
+  function MLNumBinsDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {num_bins: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLNumBinsDropdownOnClick = MLNumBinsDropdownOnClick;
+
+  function MLYaxisScaleDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {yaxis_scale: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLYaxisScaleDropdownOnClick = MLYaxisScaleDropdownOnClick;
+
+  function MLInputVariableDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {input_variable: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLInputVariableDropdownOnClick = MLInputVariableDropdownOnClick;
+
+  function MLDistributionGranularityOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {granularity: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLDistributionGranularityOnDropdownClick = MLDistributionGranularityOnDropdownClick;
+  
+  function MLMinimumScoreOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {minimum_score: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLMinimumScoreOnDropdownClick = MLMinimumScoreOnDropdownClick;
+  
+  function MLRegressionPlotDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {regressionplot: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLRegressionPlotDropdownOnClick = MLRegressionPlotDropdownOnClick;
+
+  function MLConfidenceIntervalDropdownOnClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {confidenceinterval: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.MLConfidenceIntervalDropdownOnClick = MLConfidenceIntervalDropdownOnClick;
+
+  function optimizationDistributionGranularityOnClick(e, dropdown) {
+    let buttonProp = Object.assign({}, window.refFormContainer.state.navbar, {granularity: dropdown.value});
+    window.refFormContainer.props.setDynamicData(`optimization${window.refFormContainer.props.formtype}formdata`, {});
+    setTimeout(() => {
+      window.refFormContainer.setState({ navbar: buttonProp }, () => {
+        window.refFormContainer.submitForm();
+      })
+    }, 0);
+  }
+  window.optimizationDistributionGranularityOnClick = optimizationDistributionGranularityOnClick;
+
+  function searchDocs(){
+    let searchValue = document.querySelector('.search-doc-value input').value || '';
+    let url = "https://docs.digifi.io/search?q=" + searchValue;
+    var win = window.open(url, '_blank');
+    win.focus();
+  }
+
+  function submitRefForm() {
+    window.refForm.submitForm();
+    window.overlayProps.hideModal('last');
+  }
+  window.submitRefForm = submitRefForm;
+
+  function changeType(evt) {
+    if (evt.type !== evt.variables[evt.variable]) window.refForm.setState({type: evt.variables[evt.variable]});
+  }
+  window.changeType = changeType;
+
+  function changeIntegrationStatus(data, status) {
+    window.overlayProps.fetchAction.call(this, `/integrations/update_status/${data._id}?type=dataintegration`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      document.querySelector('.dataIntegrationStatus').innerText = 'Enabled (will appear as a Data Integration option)';
+    } else {
+      document.querySelector('.dataIntegrationStatus').innerText = 'Disabled (will not appear as a Data Integration option)';
+    }
+  }
+  window.changeIntegrationStatus = changeIntegrationStatus;
+
+  function changetext_recognitionStatus(data, status) {
+    let user = window.overlayProps.user;
+    window.overlayProps.fetchAction.call(this, `/auth/update_product?type=text_recognition`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      let statusText;
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['text_recognition']) {
+        user.userdata.association.organization.products['text_recognition'].active = true;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.text_recognitionStatus');
+      statusText.innerText = 'Active';
+    } else {
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['text_recognition']) {
+        user.userdata.association.organization.products['text_recognition'].active = false;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.text_recognitionStatus');
+      statusText.innerText = 'Inactive';
+    }
+  }
+  window.changemachine_learningStatus = changemachine_learningStatus;
+
+  function changemachine_learningStatus(data, status) {
+    let user = window.overlayProps.user;
+    window.overlayProps.fetchAction.call(this, `/auth/update_product?type=machine_learning`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      let statusText;
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['machine_learning']) {
+        user.userdata.association.organization.products['machine_learning'].active = true;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.machine_learningStatus');
+      statusText.innerText = 'Active';
+    } else {
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['machine_learning']) {
+        user.userdata.association.organization.products['machine_learning'].active = false;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.machine_learningStatus');
+      statusText.innerText = 'Inactive';
+    }
+    
+  }
+  window.changemachine_learningStatus = changemachine_learningStatus;
+
+  function changerules_engineStatus(data, status) {
+    let user = window.overlayProps.user;
+    window.overlayProps.fetchAction.call(this, `/auth/update_product?type=rules_engine`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      let statusText;
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['rules_engine']) {
+        user.userdata.association.organization.products['rules_engine'].active = true;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.rules_engineStatus');
+      statusText.innerText = 'Active';
+    } else {
+      if(user && user.userdata && user.userdata.association && user.userdata.association.organization && user.userdata.association.organization.products && user.userdata.association.organization.products['rules_engine']) {
+        user.userdata.association.organization.products['rules_engine'].active = false;
+        window.overlayProps.updateUserProfile(user);
+      }
+      statusText = document.querySelector('.rules_engineStatus');
+      statusText.innerText = 'Inactive';
+    }
+  }
+  window.changerules_engineStatus = changerules_engineStatus;
+  
+  function changeDocumentCreationStatus(data, status) {
+    window.overlayProps.fetchAction.call(this, `/integrations/update_status/document/${data._id}?type=templatedocument`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      document.querySelector('.documentCreationStatus').innerText = 'Enabled (will appear as a Document Creation option)';
+    } else {
+      document.querySelector('.documentCreationStatus').innerText = 'Disabled (will not appear as a Document Creation option)';
+    }
+  }
+  window.changeDocumentCreationStatus = changeDocumentCreationStatus;
+
+  function changeDocumentOCRStatus(data, status) {
+    window.overlayProps.fetchAction.call(this, `/integrations/update_status/document/${data._id}?type=ocrdocument`, { method: 'PUT', }, {
+      successCallback:  'func:this.props.createNotification',
+      successProps: {
+        text: 'Changes saved successfully!',
+        timeout: 10000,
+        type: 'success',
+      },
+    });
+    if (status.status) {
+      document.querySelector('.documentOcrStatus').innerText = 'Enabled (will appear as a Document OCR option)';
+    } else {
+      document.querySelector('.documentOcrStatus').innerText = 'Disabled (will not appear as a Document OCR option)';
+    }
+  }
+  window.changeDocumentOCRStatus = changeDocumentOCRStatus;
+
+  function hideDataStatus() {
+    let status = document.querySelector('.rc-switch-checked');
+      if (status) {
+        document.querySelector('.dataIntegrationStatus').innerText = 'Enabled (will appear as a Data Integration option)';
+      } else {
+        document.querySelector('.dataIntegrationStatus').innerText = 'Disabled (will not appear as a Data Integration option)';
+      }
+    }
+    window.hideDataStatus = hideDataStatus;
+
+
+  function hideSecurityCert(db) {
+    let require_cert = db.dataintegration.require_security_cert;
+    if (require_cert) setTimeout(() => {
+      document.querySelector('.securityCert').style.display = 'block';
+      document.querySelector('.uploadSecurityCert').style.display = 'block';
+    }, 50);
+  }
+  
+  window.hideSecurityCert = hideSecurityCert;
+  
+  function calculationDropdownOnChange(formElement, event, newvalue){
+    if(newvalue.value){
+      this.setState({'rule*0*state_property_attribute': newvalue.value});
+      this.props.formgroups[0].formElements[1].value.children[ 1 ].props[ 'value' ] = this.state.variable_types[newvalue.value];
+    }
+  }
+  window.calculationDropdownOnChange = calculationDropdownOnChange;
+
+  function calculationRequiredVariablesDropdownOnChange(formElement, event, newvalue){
+    if(newvalue.value){
+      this.setState({'required_calculation_variables': newvalue.value});
+      // this.props.formgroups[0].formElements[1].value.children[ 1 ].props[ 'value' ] = this.state.variable_types[newvalue.value];
+    }
+  }
+  window.calculationRequiredVariablesDropdownOnChange = calculationRequiredVariablesDropdownOnChange;
+
+  function teamMemberDropdownOnChange(formElement, event, newvalue){
+    if(newvalue.value){
+      console.log({newvalue})
+      this.setState({'team_members': newvalue.value});
+      // this.props.formgroups[0].formElements[1].value.children[ 1 ].props[ 'value' ] = this.state.variable_types[newvalue.value];
+    }
+  }
+  window.teamMemberDropdownOnChange = teamMemberDropdownOnChange;
+
+  function calcFormSubmit(formData, e){
+    window.refForm.setState(formData, () => {
+      window.refForm.submitForm();
+    });
+  }
+  window.calcFormSubmit = calcFormSubmit;
+
+  function requiredVariablesModal(formElement,evt,result) {
+     if (result.value === 'variable') {
+      $.find(`.${formElement.passProps.className}`)[0].closest('.__re-bulma_column').style.display = 'block';
+      $.find(`.${formElement.passProps.className}`)[1].closest('.__re-bulma_column').style.display = 'none';
+    } else if (result.value === 'value') {
+      $.find(`.${formElement.passProps.className}`)[0].closest('.__re-bulma_column').style.display = 'none';
+      $.find(`.${formElement.passProps.className}`)[1].closest('.__re-bulma_column').style.display = 'block';
+    }
+  }
+
+  window.requiredVariablesModal = requiredVariablesModal;
+
+  function textMessageToFilter(currState, formElementsQueue, formElement, prevState) {
+    if (currState[ 'rule*0*state_property_attribute_value_comparison_type' ] !== prevState[ 'rule*0*state_property_attribute_value_comparison_type' ]) {
+      if ((currState[ 'rule*0*state_property_attribute_value_comparison_type' ] && currState[ 'rule*0*state_property_attribute_value_comparison_type' ] === 'variable') || (!currState[ 'rule*0*state_property_attribute_value_comparison_type' ] && prevState[ 'rule*0*state_property_attribute_value_comparison_type' ] === 'variable')) {
+        return {
+          name: `rule*0*state_property_attribute_value_comparison`,
+          value: '',
+          label: 'To (Phone Number)',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          type: 'remote_dropdown',
+          passProps: {
+            emptyQuery: true,
+            search: true,
+            multiple: false,
+            debounce: 250,
+            searchProps: {
+              baseUrl: '/decision/api/variable_dropdown?',
+              limit: 100,
+              sort: 'display_title',
+              response_field: 'variable_dropdown',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: `rule*0*state_property_attribute_value_comparison`,
+          onBlur: true,
+          errorIconRight: true,
+          valueCheckOnBlur: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          label: 'To (Phone Number)',
+          type: 'maskedinput',
+          value: '',
+          passProps: {
+            mask: 'func:window.phoneNumberFormatter',
+            guid: false,
+            placeholderChar: '\u2000',
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              paddingRight: '7px',
+              display: 'inline-block',
+              verticalAlign: 'top',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.textMessageToFilter = textMessageToFilter;
+
+  function textMessageContent(currState, formElementsQueue, formElement, prevState) {
+    if (currState[ 'rule*1*state_property_attribute_value_comparison_type' ] !== prevState[ 'rule*1*state_property_attribute_value_comparison_type' ]) {
+      if ((currState[ 'rule*1*state_property_attribute_value_comparison_type' ] && currState[ 'rule*1*state_property_attribute_value_comparison_type' ] === 'variable') || (!currState[ 'rule*1*state_property_attribute_value_comparison_type' ] && prevState[ 'rule*1*state_property_attribute_value_comparison_type' ] === 'variable')) {
+        return {
+          name: `rule*1*state_property_attribute_value_comparison`,
+          value: '',
+          label: 'Text Message',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          type: 'remote_dropdown',
+          passProps: {
+            search: true,
+            emptyQuery: true,
+            multiple: false,
+            debounce: 250,
+            searchProps: {
+              baseUrl: '/decision/api/variable_dropdown?',
+              limit: 100,
+              sort: 'display_title',
+              response_field: 'variable_dropdown',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: `rule*1*state_property_attribute_value_comparison`,
+          type: 'textarea',
+          label: 'Text Message',
+          placeholder: ' ',
+          onBlur: true,
+          errorIconRight: true,
+          valueCheckOnBlur: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.textMessageContent = textMessageContent;
+
+  function numberMaskTextMessage() {
+    return {
+      prefix: '',
+      suffix: '',
+      integerLimit: 10,
+      includeThousandsSeparator: false,
+      allowNegative: false,
+      decimalLimit: 4,
+    };
+  }
+  window.numberMaskTextMessage = numberMaskTextMessage;
+
+  function EmailDynamicFilter(currState, formElementsQueue, formElement, prevState) {
+    let formelement_name = formElement.name;
+    if (currState[ `${formelement_name}_type` ] !== prevState[ `${formelement_name}_type` ]) {
+      if ((currState[ `${formelement_name}_type` ] && currState[ `${formelement_name}_type` ] === 'variable') || (!currState[ `${formelement_name}_type` ] && prevState[ `${formelement_name}_type` ] === 'variable')) {
+        return {
+          name: formelement_name,
+          label: formElement.label,
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          type: 'remote_dropdown',
+          passProps: {
+            search: true,
+            emptyQuery: true,
+            multiple: false,
+            debounce: 250,
+            searchProps: {
+              baseUrl: '/decision/api/variable_dropdown?',
+              limit: 100,
+              sort: 'display_title',
+              response_field: 'variable_dropdown',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: formelement_name,
+          onBlur: true,
+          errorIconRight: true,
+          validateOnBlur: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          label: formElement.label,
+          layoutProps: {
+            style: {
+              width: '70%',
+              paddingRight: '7px',
+              display: 'inline-block',
+              verticalAlign: 'top',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.EmailDynamicFilter = EmailDynamicFilter;
+
+  function EmailContent(currState, formElementsQueue, formElement, prevState) {
+    if (currState[ 'rule*1*state_property_attribute_value_comparison_type' ] !== prevState[ 'rule*1*state_property_attribute_value_comparison_type' ]) {
+      if ((currState[ 'rule*1*state_property_attribute_value_comparison_type' ] && currState[ 'rule*1*state_property_attribute_value_comparison_type' ] === 'variable') || (!currState[ 'rule*1*state_property_attribute_value_comparison_type' ] && prevState[ 'rule*1*state_property_attribute_value_comparison_type' ] === 'variable')) {
+        return {
+          name: `rule*1*state_property_attribute_value_comparison`,
+          value: '',
+          label: 'Text Message',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          type: 'remote_dropdown',
+          passProps: {
+            search: true,
+            emptyQuery: true,
+            multiple: false,
+            debounce: 250,
+            searchProps: {
+              baseUrl: '/decision/api/variable_dropdown?',
+              limit: 100,
+              sort: 'display_title',
+              response_field: 'variable_dropdown',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: `rule*1*state_property_attribute_value_comparison`,
+          type: 'textarea',
+          label: 'Text Message',
+          placeholder: ' ',
+          onBlur: true,
+          errorIconRight: true,
+          valueCheckOnBlur: true,
+          errorIcon: 'fa fa-exclamation',
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.EmailContent = EmailContent;
+
+  function filterModuleName(currState, formElementsQueue, formElement, prevState) {
+    let formelement_name = formElement.name;
+    let curr_type = (currState[ 'type' ])? currState[ 'type' ] : prevState['type'];
+    let prev_type = prevState['type'];
+    const dynamic_modules = ['dataintegration', 'artificialintelligence',];
+    if ((currState[ 'type' ] !== prevState[ 'type' ]) ) {
+      if (curr_type === 'dataintegration' && formElement.name !== 'integration_name') {
+        formElementsQueue.push({
+          name: 'integration_name',
+          label: 'Data Integration Name',
+          value: '',
+          type: 'dropdown',
+          customOnChange: 'func:window.integrationDropdownOnChange',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.dataintegration || [],
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          layoutProps: {
+          },
+        }, {
+          name: 'static_description',
+          type: 'text',
+          passProps: {
+            state: 'isDisabled',
+            className: 'module_description_placeholder',
+          },
+          customLabel: {
+            component: 'span',
+            children: [ {
+              component: 'span',
+              children: 'Description ',
+            }, ]
+          },
+        });
+        return false;
+      } else if(curr_type === 'artificialintelligence' && formElement.name !== 'model_name'){
+        formElementsQueue.push({
+          name: 'model_name',
+          label: 'AI Model Name',
+          value: '',
+          type: 'dropdown',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.artificialintelligence || [],
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          layoutProps: {
+          },
+        },);
+        return false;
+      } else if(formElement.name !== 'name' && curr_type !== 'artificialintelligence' && curr_type !== 'dataintegration'){
+        formElementsQueue.push({
+          name: 'name',
+          keyUp: 'func:window.nameOnChange',
+          label: 'Process Module Name',
+          validateOnBlur: true,
+          onBlur: true,
+          errorIconRight: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          passProps: {
+            className: 'module_name_placeholder'
+          },
+        }, {
+          name: 'description',
+          type: 'text',
+          customLabel: {
+            component: 'span',
+            children: [ {
+              component: 'span',
+              children: 'Description ',
+            }, {
+              component: 'span',
+              children: 'Optional',
+              props: {
+                style: {
+                  fontStyle: 'italic',
+                  marginLeft: '2px',
+                  fontWeight: 'normal',
+                  color: '#969696',
+                }
+              }
+            }]
+          },
+          passProps: {
+            className: 'module_description_placeholder'
+          },
+        });
+        return false;
+      } else {
+        return formElement;
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.filterModuleName = filterModuleName;
+
+  function filterModuleDescription(currState, formElementsQueue, formElement, prevState) {
+    let formelement_name = formElement.name;
+    let curr_type = (currState[ 'type' ])? currState[ 'type' ] : prevState['type'];
+    const dynamic_modules = ['dataintegration', 'artificialintelligence'];
+    if ((currState[ 'type' ] !== prevState[ 'type' ]) ) {
+      if (dynamic_modules.indexOf(curr_type) === -1 && formElement.name === 'description') {
+        return formElement;
+      } else if(curr_type === 'artificialintelligence'){
+        return false;
+      } else if(curr_type === 'dataintegration' && formElement.name === 'static_description'){
+        return  formElement;
+      } else {
+        return false;
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.filterModuleDescription = filterModuleDescription;
+
+  function integrationDropdownOnChange(formElement, event, newvalue){
+    let static_description = (newvalue && newvalue.value && this.state.__formOptions.integrations_descriptions)? this.state.__formOptions.integrations_descriptions[newvalue.value] : '';
+    this.setState({static_description});
+  }
+  window.integrationDropdownOnChange = integrationDropdownOnChange;
+
+  function EmailTextFilter(currState, formElementsQueue, formElement, prevState) {
+    let formelement_name = formElement.name;
+    if (currState[ `${formelement_name}_type` ] !== prevState[ `${formelement_name}_type` ]) {
+      if ((currState[ `${formelement_name}_type` ] && currState[ `${formelement_name}_type` ] === 'variable') || (!currState[ `${formelement_name}_type` ] && prevState[ `${formelement_name}_type` ] === 'variable')) {
+        return {
+          name: formelement_name,
+          value: '',
+          label: formElement.label,
+          type: 'dropdown',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: `rule*2*state_property_attribute_value_comparison`,
+          type: 'textarea',
+          validateOnBlur: true,
+          onBlur: true,
+          label: 'Plain Text',
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.EmailTextFilter = EmailTextFilter;
+
+  function EmailHTMLFilter(currState, formElementsQueue, formElement, prevState) {
+    let formelement_name = formElement.name;
+    if (currState[ `${formelement_name}_type` ] !== prevState[ `${formelement_name}_type` ]) {
+      if ((currState[ `${formelement_name}_type` ] && currState[ `${formelement_name}_type` ] === 'variable') || (!currState[ `${formelement_name}_type` ] && prevState[ `${formelement_name}_type` ] === 'variable')) {
+        return {
+          name: formelement_name,
+          value: '',
+          label: formElement.label,
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          options: prevState.__formOptions.state_property_attribute,
+          type: 'remote_dropdown',
+          passProps: {
+            search: true,
+            multiple: false,
+            emptyQuery: true,
+            debounce: 250,
+            searchProps: {
+              baseUrl: '/decision/api/variable_dropdown?',
+              limit: 100,
+              sort: 'display_title',
+              response_field: 'variable_dropdown',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px'
+            }
+          },
+        };
+      } else {
+        return {
+          name: `rule*2*state_property_attribute_value_comparison`,
+          type: 'code',
+          validateOnBlur: true,
+          onBlur: true,
+          label: 'Email Content',
+          codeMirrorProps: {
+            options: {
+              mode: 'application/x-ejs',
+            },
+          },
+          layoutProps: {
+            style: {
+              width: '70%',
+              display: 'inline-block',
+              verticalAlign: 'top',
+              paddingRight: '7px',
+            }
+          },
+        };
+      }
+    } else {
+      return formElement;
+    }
+  }
+  window.EmailHTMLFilter = EmailHTMLFilter;
+
+  function codeMirrorParser(values) {
+    let nestedKey;
+    values = values.map(i => i.replace(/[\u200B-\u200D\uFEFF]/g, '')).filter(i => i !== '');
+    return values.reduce((acc, curr) => {
+      try {
+        let line = curr.split(':');
+        let key = line[0].trim();
+        let value = line.slice(1).join(':').trim();
+        if (value[0] !== '"') {
+          if (value.slice(-1) === ',') value = value.slice(0, -1);
+          if (!isNaN(value)) value = Number(value);
+          else if (value === 'true') value = true;
+          else if (value === 'false') value = false;
+          else if (value === 'null') value = null;
+        } else {
+          if (value.slice(-1) === ',') value = value.slice(0, -1);
+          if (value[0] === '"' && value.slice(-1) === '"') value = value.slice(1, -1);
+        }
+        if (key[0] === '"' && key[key.length - 1] === '"') key = key.slice(1, -1);
+        if (['{', '\"{\"', '\'{\''].indexOf(value) !== -1) {
+          nestedKey = nestedKey ? `${nestedKey}.${key}` : key;
+          nestedKey.split('.').reduce((acc, curr, i) => {
+            if (i === nestedKey.split('.').length - 1) {
+              acc[curr] = {};
+            } else {
+              return acc[curr]
+            }
+          }, acc);
+        } else if (['}', '\"}\"', '\'}\'', '},', '\"},\"', '\'},\'', ].indexOf(key) !== -1) {
+          nestedKey = nestedKey.split('.').slice(0, -1).join('.');
+        } else if (nestedKey) {
+          nestedKey.split('.').reduce((acc, curr, i) => {
+            if (i === nestedKey.split('.').length - 1) {
+              acc[curr][key] = value;
+            } else {
+              return acc[curr]
+            }
+          }, acc);
+        } else {
+          acc[key] = value;
+        }
+        return acc;
+      } catch (e) {
+        return acc;
+      }
+    }, {});
+  }
+
+  function submitDataIntegration() {
+        window.overlayProps.hideModal('last');
+        window.refForm.submitForm();
+  }
+  window.submitDataIntegration =  submitDataIntegration;
+
+  function submitTestCaseForm() {
+    let values = Array.from(document.querySelectorAll('.CodeMirror-line')).map(el => el.innerText);
+    let formdata = codeMirrorParser(values);
+    if(!Object.keys(formdata).length){
+      formdata = undefined;
+    }
+    window.refForm.setState({ value: formdata, }, () => {
+      window.refForm.submitForm();
+    });
+  }
+  window.submitTestCaseForm = submitTestCaseForm;
+
+  function simulationWarningModal(modalProps, second, third){
+      let currentFormState = (window.refForm)? window.refForm.state : null;
+
+      if(currentFormState){
+        const txtswitch = {
+          dataintegration: 'Data Integrations are turned on. Each Case will retrieve new data from integrations (if applicable).',
+          artificialintelligence: 'Machine learning models are turned on. Each Case will run your models (if applicable).',
+          email: 'Emails are turned on. Each Case will send emails (if applicable).',
+          textmessage: 'Text Messages are turned on. Each Case will send text messages (if applicable).',
+        };
+        const mds = ['dataintegration', 'artificialintelligence', 'email', 'textmessage'];
+        let switches = [];
+        for (let md of mds){
+          if(currentFormState[`module_skip.file.${md}`]) 
+          switches.push({
+            component: 'li',
+            children: txtswitch[md],
+          });
+        }
+        if(switches.length){
+          this.props.setDynamicData('txtswitch', [{
+            component: 'ul',
+            props: {
+              style: {
+                textAlign: 'left',
+              },
+            },
+            children: switches,
+          }]);
+        } else {
+          this.props.setDynamicData('txtswitch', []);
+        }
+      }
+      setTimeout(() => {
+        window.overlayProps.createModal(modalProps)
+      }, 0);
+  }
+  window.simulationWarningModal = simulationWarningModal;
+  
+  function mlAnalysisTabOnClick(location) {
+    this.props.setDynamicData(`optimization${location.onclickBaseUrl}data`, {data: {}, _children: {
+      optimization_chart_card: [],
+      optimization_download_dropdown: [],
+    }});
+    setTimeout(() => {
+      this.props.reduxRouter.push(location.onclickBaseUrl);
+    }, 0);
+  }
+  window.mlAnalysisTabOnClick = mlAnalysisTabOnClick;
+
+  function filterDataSourceFile(){
+    if(document.querySelector("input[type=file]")){
+      document.querySelector("input[type=file]").setAttribute("accept", ".csv,.xls,.xlsx");
+    }
+  }
+  window.filterDataSourceFile = filterDataSourceFile;
+
+  function filtertemplateFile(){
+    if(document.querySelector("input[type=file]")){
+      document.querySelector("input[type=file]").setAttribute("accept", ".pdf");
+    }
+  }
+  window.filtertemplateFile = filtertemplateFile;
+
+  function allowMultipleFiles(){
+    if(document.querySelector("input[type=file]")){
+      document.querySelector("input[type=file]").setAttribute('multiple', true);
+    }
+  }
+  window.allowMultipleFiles = allowMultipleFiles;
+
+  function formElementExistsThree(formElementsQueue, value) {
+    let exists = formElementsQueue.reduce((exists, element) => {
+      return (exists || (element.name === value)) ? true : false;
+    }, false);
+    return exists;
+  }
+  window.formElementExistsThree = formElementExistsThree;
+
+  function filterDataSourceDropdown(currState, formElementsQueue, formElement, prevState){
+    if(currState.type){
+      if(`data_source_${currState.type}` === formElement.name) return formElement;
+      else return {
+          label: 'Data Source',
+          name: `data_source_${currState.type}`,
+          type: 'dropdown',
+          errorIconRight: true,
+          validateOnChange: true,
+          errorIcon: 'fa fa-exclamation',
+          validIcon: 'fa fa-check',
+          passProps: {
+            selection: true,
+            fluid: true,
+            search: true,
+          },
+          options: prevState.__formOptions[`${currState.type}_data_source`],
+          layoutProps: {
+            style: {
+              textAlign: 'center',
+              padding: 0,
+            },
+          },
+        }; 
+    } else{
+      return {
+        label: 'Data Source',
+        name: `data_source_binary`,
+        type: 'dropdown',
+        errorIconRight: true,
+        validateOnChange: true,
+        errorIcon: 'fa fa-exclamation',
+        validIcon: 'fa fa-check',
+        passProps: {
+          selection: true,
+          fluid: true,
+          search: true,
+        },
+        options: prevState.__formOptions[`binary_data_source`],
+        layoutProps: {
+          style: {
+            textAlign: 'center',
+            padding: 0,
+          },
+        },
+      };
+    }
+  }
+  window.filterDataSourceDropdown = filterDataSourceDropdown;
+
+  function ocrDocumentPageOnChange(formElement, evt, state){
+    window.overlayProps.reduxRouter.push(state.value)
+  }
+  window.ocrDocumentPageOnChange = ocrDocumentPageOnChange;
+
+
+  function individualRunProcessingOnChange(formElement, evt, state){
+    // window.refForm.setState({'selected_strategy': state.value }, () => {
+    //   window.refForm.submitForm();
+    // })
+    window.overlayProps.reduxRouter.push(`/decision/processing/individual/run/${state.value}`)
+  }
+  window.individualRunProcessingOnChange = individualRunProcessingOnChange;
+
+  function batchMLRunProcessingOnChange(formElement, evt, state){
+    // window.refForm.setState({'selected_strategy': state.value }, () => {
+    //   window.refForm.submitForm();
+    // })
+    window.overlayProps.reduxRouter.push(`/decision/processing/batch/run/${state.value}`)
+  }
+  window.batchMLRunProcessingOnChange = batchMLRunProcessingOnChange;
+  
+
+  function batchRunProcessingOnChange(formElement, evt, state){
+    window.overlayProps.reduxRouter.push(`/decision/processing/batch/run/${state.value}`)
+  }
+  window.batchRunProcessingOnChange = batchRunProcessingOnChange;
+
+  // function individualMLRunProcessingOnChange(formElement, evt, state){
+  //   // window.refForm.setState({'selected_strategy': state.value }, () => {
+  //   //   window.refForm.submitForm();
+  //   // })
+  //   window.overlayProps.reduxRouter.push(`/optimization/processing/individual/${state.value}`)
+  // }
+  // window.individualMLRunProcessingOnChange = individualMLRunProcessingOnChange;
+  
+  function individualMLModelSelection(formElement, evt, state){
+    window.overlayProps.reduxRouter.push(`/ml/processing/individual/${state.value}`)
+  }
+  window.individualMLModelSelection = individualMLModelSelection;
+  
+
+  function batchMLRunProcessingOnChange(formElement, evt, state){
+    window.overlayProps.reduxRouter.push(`/optimization/processing/batch/${state.value}`)
+  }
+  window.batchMLRunProcessingOnChange = batchMLRunProcessingOnChange;
+
+  function batchMlModelSelection(formElement, evt, state){
+    window.overlayProps.reduxRouter.push(`/ml/processing/batch/${state.value}`)
+  }
+  window.batchMlModelSelection = batchMlModelSelection;
+
+  function handleIndividualRun(result){
+    window.refForm.setDynamicData('inputdata', result);
+  }
+  window.handleIndividualRun = handleIndividualRun;
+
+  function displayOCRExtraction(response){
+    this.props.hideModal('last');
+    setTimeout(() => {
+       window.overlayProps.settings.userprofile.options.headers[ 'Content-Type' ] = 'application/json';
+      this.props.createModal({title: 'Variables Required by Document', text: response.pageLayout})
+    }, 0)
+  }
+  window.displayOCRExtraction = displayOCRExtraction;
+
+  function createAddOCRVariableModal(response){
+    setTimeout(() => {
+      response = response || {};
+      response.pageLayout = response.pageLayout || null;
+       window.overlayProps.settings.userprofile.options.headers[ 'Content-Type' ] = 'application/json';
+      this.props.createModal({title: 'Add Field to OCR Template', text: response.pageLayout})
+    }, 0)
+  }
+  window.createAddOCRVariableModal = createAddOCRVariableModal;
+
+  function downloadFileAndClose(response){
+    let blob=new Blob([`\ufeff${response.download_file}`], {type: "text/csv"});
+    let link=document.createElement('a');
+    link.href=window.URL.createObjectURL(blob);
+    link.download="testing.csv";
+    link.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(link.href);
+      this.props.hideModal('last');
+    }, 100)
+  }
+  window.downloadFileAndClose = downloadFileAndClose;
+  
+  function boldOverallResultsRow(table){
+    let simulation_processing_results_table = document.querySelector('.simulation_processing_results_table');
+    if(simulation_processing_results_table && simulation_processing_results_table.lastElementChild && simulation_processing_results_table.lastElementChild.lastElementChild && simulation_processing_results_table.lastElementChild.lastElementChild.firstElementChild && simulation_processing_results_table.lastElementChild.lastElementChild.firstElementChild.innerHTML && simulation_processing_results_table.lastElementChild.lastElementChild.firstElementChild.innerHTML === 'Overall Result'){
+      simulation_processing_results_table.lastElementChild.lastElementChild.firstElementChild.style.fontWeight = 800;
+    }
+  }
+  window.boldOverallResultsRow = boldOverallResultsRow;
+
+  function showFileUploadFormElement(){
+    let uploadfile_input = document.querySelector('.uploadfile_input');
+    if(uploadfile_input){
+      uploadfile_input.style.display = 'block';
+    }
+  }
+  window.showFileUploadFormElement = showFileUploadFormElement;
+
+  function showSubmitButtonFormElement(fileinput){
+    if(fileinput){
+      let submitbutton = document.querySelector('.submitbutton');
+      if(submitbutton){
+        submitbutton.style.visibility = 'visible';
+      }
+    }
+  }
+  window.showSubmitButtonFormElement = showSubmitButtonFormElement;
+
+   function numberCreditCard(formElement) {
+    const INTEGER_LIMIT = {
+      "credit_card_number": 30,
+      cvc: 4,
+      postal_code: 5,
+    };
+    return {
+      prefix: '',
+      suffix: '',
+      integerLimit: INTEGER_LIMIT[formElement.name],
+      includeThousandsSeparator: false,
+      allowLeadingZeroes: true,
+      allowNegative: false,
+      decimalLimit: 0,
+    };
+  }
+  window.numberCreditCard = numberCreditCard;
+
+  function emailFormat(e, element) {
+    let currentVal = e.target.value.replace(/\s/gi, '');
+    this.setState({ 'username': currentVal, });
+  }
+
+  window.emailFormat = emailFormat;
+
+  function organizationFormat(e, element) {
+    let currentVal = e.target.value.replace(/^[ \s]+/gi, '');
+    this.setState({ 'name': currentVal, });
+  }
+
+  window.emailFormat = emailFormat;
+
+  function changeModelSelection(formState){
+    let selected_model = formState.model_selections.filter(model => model.selected);
+    selected_model = selected_model.length? selected_model[0].provider_name : null;
+    if(selected_model){
+      this.props.formgroups[1].formElements[0].value.children = formState.selected_model_descriptions[selected_model];
+    }
+  }
+  window.changeModelSelection = changeModelSelection;
+  
+  function removeDisabledClassFromSwitch(){
+    let nodeList = document.querySelectorAll(".rc-switch");
+    if(nodeList){
+      for(let i = 0; i < nodeList.length; i++){
+        if(nodeList[i] && nodeList[i].classList) nodeList[i].classList.remove("rc-switch-disabled");
+      }
+    }
+  }
+  window.removeDisabledClassFromSwitch = removeDisabledClassFromSwitch;
+
+  function submitWithLoader(){
+    if(window.overlayProps && window.overlayProps.setUILoadedState){
+      window.overlayProps.setUILoadedState.call(this, false);
+      let pathname = '/decision/api/standard_strategies?type=version';
+      let fetchOptions = {
+         method: 'POST',
+      };
+      let success = {
+        success: {
+          notification: {
+            text: 'Created New Version',
+            timeout: 10000,
+            type: 'success',
+          },
+        },
+        successCallback: 'func:window.submitWithLoaderCallback',
+      };
+      window.overlayProps.fetchAction.call(this, pathname, fetchOptions, success);
+    }
+  }
+  window.submitWithLoader = submitWithLoader;
+
+  function submitWithLoaderCallback(successProps){
+    if(window.overlayProps && window.overlayProps.setUILoadedState){
+      window.overlayProps.setUILoadedState.call(this, true);
+      window.overlayProps.reduxRouter.push(successProps.pathname);
+    }
+  }
+  window.submitWithLoaderCallback = submitWithLoaderCallback;
+
+  function phoneNumberFormatter (){
+     return ['(', /[1-9]/, /\d/, /\d/, ')', '\u2000', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  }
+  window.phoneNumberFormatter = phoneNumberFormatter;
+
+  function SSNFormatter(e, element) {
+    return [/\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  };
+  window.SSNFormatter = SSNFormatter;
+
+  var testMaskDollarInput = function(rawValue) {
+    return {
+      prefix: '$ ',
+      decimalLimit: 2,
+      allowDecimal: true,
+      suffix: '' // This will put the dollar sign at the end, with a space.
+    };
+  }
+
+  window.testMaskDollarInput = testMaskDollarInput;
+
+   function textMaskPercentageInput(rawValue) {
+        return {
+            prefix: '',
+            decimalLimit: 2,
+            suffix: '%', // This will put the dollar sign at the end, with a space.
+            allowDecimal: true,
+            integerLimit: 7,
+        };
+    }
+    window.textMaskPercentageInput = textMaskPercentageInput;
+
+
+  function textMaskNumberInput(rawValue) {
+    return {
+      prefix: '',
+      suffix: '',
+        decimalLimit: 4,
+        allowDecimal: true,
+        integerLimit: 10,
+    };
+  }
+  window.textMaskNumberInput = textMaskNumberInput;
+
+  function taxIdInputLimit(rawValue) {
+    if(rawValue.value === undefined) rawValue.value = '';
+      return {
+          includeThousandsSeparator: false,
+          prefix: '',
+          suffix: '',
+          integerLimit: 9,
+      };
+  }
+  window.taxIdInputLimit = taxIdInputLimit;
+    
+</script>
+<script type="text/javascript" src="/container/decision-engine-service-container/public/build/bundle.js"></script>
+<script type="text/javascript">
+<%- include('../../../../../../public/LivIconsEvo/js/LivIconsEvo.Tools.js');%>
+</script>
+<script type="text/javascript">
+<%- include('../../../../../../public/LivIconsEvo/js/LivIconsEvo.defaults.js');%>
+</script>
+<script type="text/javascript">
+<%- include('../../../../../../public/LivIconsEvo/js/LivIconsEvo.min.js');%>
+</script>

@@ -1,0 +1,27 @@
+<%- include('../shared/header') %>
+<%- include('../shared/nav') %>
+<% var errorTitle='';
+try{
+  errorTitle = locals.error.toString().split('\n')[0];
+} catch(e){
+  errorTitle = locals.error.message;
+}
+%>
+<article>
+  <section>
+    <% if(locals.appenvironment!=='production'){%>
+    <details open="open">
+      <summary>
+        <%- errorTitle %>
+      </summary>
+      <div>
+        <pre><%- locals.error.stack %></pre>
+      </div>
+    </details>
+    <%} 
+    else{%>
+      <h3>Internal Server Error</h3>
+    <%} %>
+  </section>
+</article>
+<%- include('../shared/footer') %>

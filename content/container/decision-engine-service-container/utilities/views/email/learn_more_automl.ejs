@@ -1,0 +1,84 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <p>Hi <%- user.first_name %>, </p>
+
+      <p>Using technology to replace human judgement has obvious benefits, but most organizations – especially small and mid-sized businesses – historically lacked the significant technical and statistical expertise required to translate judgmental processes into codified business rules and predictive models.</p>
+
+      <p>Automated machine learning (AutoML) is quickly changing that by empowering companies of all sizes to embrace next-gen data science and predictive analytics.  With that in mind, we wanted to share our perspective on this transformation, and how it's impacting the future of businesses around the world.</p>
+    </td>
+  </tr>
+</table>
+<!-- body content -->
+<% include _warm_regards_with_digifi.ejs%>
+<br>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+  </tr>
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <h2 style="color: #007aff;"><b>How Automated Machine Learning (AutoML) is Leveling the Playing Field</b></h2>
+
+      <p>AutoML makes machine learning accessible to everyone 👍</p>
+
+      <p>Fueled by exponentially increasing data and compute power, Machine Learning (ML) is having an unprecedented impact on our everyday lives.  While the most conspicuous applications of machine learning are consumer products such as Apple’s Siri or Amazon’s Alexa, machine learning is also quietly transforming operations at a wide range of businesses.</p>
+
+      <p>Predictive models built with machine learning techniques allow businesses to leverage their historical data to make better decisions in a way that hasn’t been possible until recently. However, machine learning is only fully understood by a limited group of engineers and statisticians, who are often paid large sums of money for their expertise. As a result the benefits of machine leaning have historically only been available to the largest organizations in the world.</p>
+
+      <p>Automated Machine Learning (AutoML) is changing this. It builds upon the amazing work done by world-class data scientists and makes machine learning available as a service that companies can use to easily train predictive models. This lets organizations of all sizes embrace machine learning without needing to hire a team of experts.</p>
+
+      <p><b>What is Machine Learning?</b></p>
+
+      <p>Machine learning is the process of training computers to execute cognitive tasks without explicit programming by humans. It does so by using statistical methods and algorithms to process data and train models that can make predictions.</p>
+
+      <p>Machine learning contrasts with traditional computer programing, where logic is explicitly coded into the system by a programmer using “if this then that” rules. Machine learning derives the processing logic itself by analyzing information and “learning” from it.</p>
+
+      <p>Learn More: <a href="https://digifi.io/blog/machine-learning-vs-artificial-intelligence-whats-the-difference/">AI vs. ML – What’s The Difference?</a></p>
+
+      <p><b>Traditional ML Model Training</b></p>
+
+      <p>The machine learning process typically starts with raw data and ends with a predictive model that can be used to make decisions. This process usually includes the following steps:</p>
+
+      <p>1. <b>Data Gathering</b> to identify and collect input data.</p>
+      <p>2. <b>Data Cleansing</b> to standardize and clean the raw inputs.</p>
+      <p>3. <b>Feature Processing</b> to transform the input data into formats that can be easily processed to identify the best predictor variables.</p>
+      <p>4. <b>Model Training</b> to train the model, using a wide range of potential algorithms.</p>
+      <p>5. <b>Model Validation</b> to test the model against historical data and assess its performance.</p>
+      <p>6. <b>Model Deployment</b> to load the model into an environment where it can make decisions.</p>
+
+      <p>Even in the simplified process outline above, it’s clear that a lot of work is required to get from the start (raw data) to the finish (predictive model). In most cases the process is also iterative, with practitioners moving back and forth between steps and trying additional approaches to improve model performance. This process is impractical without significant expertise and it can easily take statisticians weeks or months. Further, it requires frequent revision as new data becomes available.</p>
+
+      <p><b>AutoML = AI to Train AI</b></p>
+
+      <p>The primary goal of AutoML is to make machine learning easier to use by automating the entire process. For example, DigiFi’s AutoML platform only requires raw data – every other step of the process is compelted automatically by the system. You don’t need to preprocess the data, generate features, select algorithms, or even deploy the model – it’s all done for you.</p>
+
+      <p>The obvious drawback of automated machine learning is that computers don’t have the intuition of an experienced data scientist. However, AutoML addresses this with one major advantage – it can try many different things really quickly! By systematically testing a wide range of approaches, AutoML quickly builds powerful models that would have taken significant expertise and months of time to develop in the traditional way. The benefit is felt both at the initial deployment of ML, which sees a greatly improved timeline, as well as on an ongoing basis, as retraining of models can be done very quickly.</p>
+
+      <p>Perhaps the largest impact can be felt by businesses with limited data science resources. AutoML enables non-statisticians to train, assess and deploy models in a way that simply wasn’t possible before. Given the widely publicized shortage of data science talent, AutoML can play an important role in bridging the gap many businesses face between having data and being able to effectively make decisions with it.</p>
+
+      <p><b>Final Thoughts</b></p>
+
+      <p>Machine Learning is unlocking new sources of predictive power and can meaningfully impact decision accuracy. It has attracted a lot of attention in recent years as increases in data availability and computational power have made it more practical and valuable. AutoML is moving to the forefront of this revolution by making machine learning accessible to organizations of all sizes, leveling the playing fields between large and small companies and increasingly shaping the future of our economy.</p>
+      
+      <br>
+      <% const buttonLink = locals.protocol + locals.url + locals.basepath; %>
+      <%	const buttonLabel = 'Sign In To DigiFi'; %>
+      <% include _button.ejs%>
+      <br>
+    </td>
+  </tr>
+</table>
+
+<% include _styled_footer_with_unsub_from_support.ejs %>

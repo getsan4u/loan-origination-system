@@ -1,0 +1,568 @@
+@import './variables';
+@import './mixins';
+
+.__re-bulma_button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.__re-bulma_button.question-button,
+.question-button {
+  height: 15px;
+  width: 15px;
+  display: inline-flex;
+  border-radius: 100%;
+  padding: 0;
+  line-height: 1;
+  color:  $color-default-text;
+  vertical-align: baseline;
+  bottom: -1px;
+  border: none !important;
+  &:after {
+    content: '\f059';
+    display: inline-block;
+    font-family: FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    color: inherit;
+    font-size: 18px;
+    position: relative;
+    top: -1px;
+  }
+  &:hover {
+    color: $color-gray;
+  }
+}
+
+.__ra_rb.button_page_title{
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.__re-bulma_button.arrow-right-btn {
+  &:after {
+    content: "\f105";
+    display: inline-block;
+    font-family: "FontAwesome";
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: 10px;
+  }
+}
+
+.ui.dropdown.__re-bulma_button {
+  display: inline-flex;
+  & .menu  {
+    width: 100%;
+    &>.item {
+      font-weight: 600;
+      font-size: inherit;
+      text-align: center;
+      &:not(:last-child) {
+        border-bottom: 1px solid rgba(34,36,38,.15);
+      }
+      & .__re-bulma_button, .__ra_rb, a {
+        border: none;
+        width: 100%;
+        color: inherit !important;
+        box-shadow: none;
+        text-decoration: none;
+        padding: 0 20px;
+        height: 36px;
+        line-height: 36px;
+      }
+    }
+  }
+  &>.dropdown.icon {
+    margin-left: 8px;
+  }
+  &.purple {
+    & .menu>.item {
+      color: $color-indigo;
+    }
+  }
+  &.__re-bulma_is-success {
+    & .menu>.item {
+      color: $color-green;
+    }
+  }
+  &.__re-bulma_is-primary {
+    & .menu>.item {
+      color: $color-primary;
+    }
+  }
+}
+
+.global-guide-btn .__re-bulma_button .__re-bulma_icon:last-child {
+    margin-right: -7px;
+    & .__re-bulma_icon {
+      font-size: inherit;
+      height: auto;
+    }
+    & .fa-external-link {
+      font-weight: bold;
+    }
+}
+
+.__re-bulma_button {
+    & .__re-bulma_icon {
+      font-size: inherit;
+      height: auto;
+    }
+    & .fa-external-link {
+      font-weight: bold;
+    }
+}
+
+.__re-bulma_button.__icon_button {
+  color: $color-primary;
+  background-color: white;
+  border: none;
+  padding: 0 3px;
+  min-width: none;
+  margin: 0 3px;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, .1), 0 0 0 1px rgba(17, 17, 17, .1);
+  font-size: 18px;
+  &.__icon-large {
+    padding: 0 8px;
+    height: 36px;
+  }
+  &.active {
+    background-color: $color-primary;
+    color: white;
+  }
+  &.__re-bulma_is-danger {
+    color: $color-red;
+    &:hover{ 
+      color: white;
+    }
+  }
+  &.green {
+    color: $color-green;
+    &:hover{ 
+      color: white;
+      background-color: $color-green;
+    }
+  }
+  &.icon-trash-content:after {
+    content: "\F1F8";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+    color: inherit;
+    font-size: 18px;
+  }
+  &.icon-save-content:after {
+    content: "\f0c7";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+    color: inherit;
+    font-size: 18px;
+  }
+  &.icon-pencil-content:after {
+    content: "\F040";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+    color: inherit;
+    font-size: 18px;
+  }
+}
+.__re-bulma_button.__icon_button:hover,
+.__re-bulma_pagination .__re-bulma_button:hover,
+.__re-bulma_button.__icon_button:hover {
+  background-color: $color-primary;
+  color: white !important;
+    &.__re-bulma_is-danger {
+    background-color: $color-red;
+  }
+}
+
+.reactapp__app_div_content .__re-bulma_table .__re-bulma_button.__re-bulma_is-outlined,
+.__re-bulma_button.__icon_button {
+  color: #007aff;
+  border: none;
+  padding: 0 3px;
+  margin: 0 3px;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+}
+
+.__re-bulma_button.__re-bulma_is-medium {
+  font-weight: 600;
+  border-width: 2px;
+  border-radius: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 36px;
+  font-size: 13px;
+}
+
+a.__re-bulma_button.__re-bulma_is-primary,
+.__re-bulma_button.__re-bulma_is-primary,
+.__re-bulma_button.__re-bulma_is-primary:focus {
+  background-color: #fff;
+  color: $color-primary;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, .1), 0 0 0 1px rgba(17, 17, 17, .1);
+  border-radius: 5px;
+  min-width: 150px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 36px;
+  font-size: 13px;
+  text-transform: uppercase;
+  &.purple {
+    color: $color-indigo;
+  }
+}
+
+.__re-bulma_button.__re-bulma_is-primary>span {
+  font: inherit;
+}
+
+.__re-bulma_pagination span {
+  color: inherit;
+}
+
+.__re-bulma_button span {
+  font-weight: inherit;
+  font-size: inherit;
+  
+}
+
+.__re-bulma_pagination .__re-bulma_button {
+  font-size: 20px;
+  color: $color-primary;
+  padding: 0;
+  height: 30px;
+  width: 30px;
+  border: none;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+}
+
+.__re-bulma_pagination .__re-bulma_button>span {
+  margin: 0;
+}
+
+.__re-bulma_button.__re-bulma_is-link:focus,
+.__re-bulma_button.__re-bulma_is-link:hover {
+  background-color: transparent;
+}
+
+.__re-bulma_button.__re-bulma_is-link:active {
+  box-shadow: none;
+}
+
+.__re-bulma_button.__re-bulma_is-primary.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-primary:hover {
+  background-color: $color-primary !important;
+  border-color: $color-primary !important;
+  color: white !important;
+  transition: background-color 0.15s ease;
+}
+.__re-bulma_button.__re-bulma_is-primary.purple.__re-bulma_is-active,
+// .__re-bulma_button.__re-bulma_is-primary.purple:focus,
+.__re-bulma_button.__re-bulma_is-primary.purple:hover {
+  background-color: $color-indigo !important;
+  border-color: $color-indigo !important;
+  color: white !important;
+  transition: background-color 0.15s ease;
+}
+
+.__re-bulma_button.__re-bulma_is-primary {
+  transition: background-color 0.15s ease;
+}
+
+
+.__re-bulma_button.__re-bulma_is-danger,
+.__re-bulma_button.__re-bulma_is-danger:focus  {
+  &:not(.__icon_button) {
+    background-color: white;
+    border: none;
+    color: $color-red;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+    border-radius: 5px;
+    min-width: 150px;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 36px;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+}
+
+.__re-bulma_button.__re-bulma_is-danger.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-danger:hover {
+  background-color: $color-red;
+  color: white;
+}
+
+.__re-bulma_button.__re-bulma_is-active,
+.__re-bulma_button:focus,
+button:active {
+  border-color: $color-primary;
+}
+
+.__re-bulma_button.__re-bulma_is-white.__re-bulma_is-loading.__is_loading:after {
+  border-color: transparent transparent $color-primary $color-primary!important;
+  height: 25px;
+  width: 25px;
+  border-width: 3px;
+}
+
+.__re-bulma_button.__re-bulma_is-white.__re-bulma_is-loading {
+  background: transparent;
+}
+
+.__re-bulma_button {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.__re-bulma_button.__re-bulma_is-success,
+.__re-bulma_button.__re-bulma_is-success:focus {
+  @include defaultSuccessButton;
+}
+
+.__re-bulma_button.docusign-btn,
+.__re-bulma_button.docusign-btn:focus {
+  @include defaultSuccessButton;
+  &:hover,
+  &.__re-bulma_is-active {
+    background-color: $color-docusign !important;
+    border-color: $color-docusign;
+      &>span {
+        background-image: url(/images/elements/docusign-logo-white.svg);
+      }
+  }
+  &>span {
+    display: block;
+    background-image: url(/images/elements/docusign-logo.png);
+    width: 75px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    background-position: center;
+
+  }
+}
+
+
+
+
+.__re-bulma_icon {
+  font-size: inherit;
+}
+
+.__re-bulma_button .__re-bulma_icon:first-child,
+.__re-bulma_button .__re-bulma_tag:first-child {
+  margin: 0;
+}
+
+.__re-bulma_modal .__re-bulma_delete {
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+}
+
+.__re-bulma_modal .__re-bulma_delete:after,
+.__re-bulma_modal .__re-bulma_delete:before {
+  background-color: #929292;
+  height: 4px;
+  width: 100%;
+  margin: 0;
+  left: 0;
+}
+
+.__re-bulma_modal .__re-bulma_delete:hover {
+  background-color: transparent;
+}
+
+.__re-bulma_modal .__re-bulma_delete:hover:before,
+.__re-bulma_modal .__re-bulma_delete:hover:after {
+  background-color: #6b6969;
+}
+
+// Radio Button Groups
+.radio-btn-group {
+  &.__re-bulma_columns {
+    margin: 0 -3px 10px -3px;
+  }
+
+  .__re-bulma_column {
+    display: flex;
+    width: 33.3333333%;
+    max-width: 33.3333333%;
+    flex: 1 1 auto;
+    padding: 3px;
+
+    c>span {
+      display: flex;
+    }
+  }
+
+  label {
+    font-size: 0.875rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    display: block;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 125px;
+    padding: 12px 15px;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+
+    & span {
+      font: inherit;
+      display: block;
+    }
+  }
+
+  input[type="radio"] {
+    z-index: -1;
+    position: absolute;
+
+    &:before,
+    &:checked:after {
+      content: none;
+    }
+
+    &+label {
+      & .radio-icon {
+        width: 60px;
+        height: 60px;
+        margin-top: 0;
+        margin-left: -5px;
+        background-size: 100% 200%;
+      }
+    }
+
+    &:checked {
+      &+label {
+        background: $color-primary;
+        color: white;
+
+        & .radio-icon {
+          background-position-y: 100%;
+        }
+
+        & .__re-bulma_button.question-button,
+        & .question-button {
+          color: white;
+          background-color: $color-default-text;
+          &:hover {
+            color: #ccc;
+          }
+        }
+      }
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+      &+label {
+        border: 1px solid $color-primary;
+      }
+    }
+  }
+}
+
+// Global Button Bar
+
+.global-button-bar {
+  .global-button-save {
+    flex: none;
+  }
+  .__re-bulma_column {
+    padding: 10px 5px;
+    &:first-child {
+      padding-left: 10px,
+    }
+    &:last-child {
+      padding-right: 10px,
+    }
+  }
+  & .__re-bulma_control{
+    border-color: transparent;
+  }
+  & .__re-bulma_input,
+  & .ui.dropdown {
+    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1) !important;
+    border-color: inherit;
+    height: 36px;
+  }
+}
+
+.home_box_column {
+  &.strategy {
+    @include customColorButton($color-indigo);
+  }
+  &.simulation {
+    @include customColorButton($color-primary);
+  }
+  &.optimization {
+    @include customColorButton($color-green);
+  }
+  &.implementation {
+    @include customColorButton($color-orange);
+  }
+  &.account {
+    @include customColorButton($color-light-blue);
+  }
+  &.settings {
+    @include customColorButton($color-pink);
+  }
+  &.documentation {
+    @include customColorButton($color-orange);
+  }
+  &.strategy_nohover {
+    @include customColorButton_nohover($color-indigo);
+  }
+  &.simulation_nohover {
+    @include customColorButton_nohover($color-primary);
+  }
+  &.optimization_nohover {
+    @include customColorButton_nohover($color-green);
+  }
+  &.api_nohover {
+    @include customColorButton_nohover($color-orange);
+  }
+  &.account_nohover {
+    @include customColorButton_nohover($color-light-blue);
+  }
+  &.settings_nohover {
+    @include customColorButton_nohover($color-pink);
+  }
+  &.documentation_nohover {
+    @include customColorButton_nohover($color-orange);
+  }
+  & .box_column_icon {
+    background-position: top;
+  }
+
+  &:hover {
+    & .box_column_icon {
+      background-position: center;
+    }
+  } 
+}

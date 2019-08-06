@@ -1,0 +1,23 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+<% const buttonLink = locals.protocol+locals.url+locals.basepath+'?activation_token='+locals.user.extensionattributes.passport.user_activation_token_link; %>
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+		<p>Dear <%- user.first_name %>,</p>
+		<p> Please verify your email address by clicking the button below.</p>
+		<br/>
+		<%	const buttonLabel = 'Verify Your Email Address';%>
+		<% include _button.ejs%>
+    </td>
+  </tr>
+</table>
+<!-- body content -->
+<% include _add_space.ejs%>
+<% include _thank_you_text.ejs%>
+<% include _styled_footer %>

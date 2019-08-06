@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 60 180" style="enable-background:new 0 0 60 180;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#007AFF;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+	.st1{fill:#91E9FF;stroke:#007AFF;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+	.st2{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+	.st3{fill:none;stroke:#656464;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+</style>
+<g>
+	<g>
+		<g>
+			<path class="st0" d="M30,29h13c1.1,0,2,0.9,2,2v8"/>
+			<rect x="41" y="39" class="st1" width="10" height="10"/>
+		</g>
+		<g>
+			<path class="st0" d="M30,29H17c-1.1,0-2,0.9-2,2v8"/>
+			<rect x="9" y="39" class="st1" width="10" height="10"/>
+		</g>
+		<g>
+			<line class="st0" x1="30" y1="21" x2="30" y2="39"/>
+			<rect x="25" y="39" class="st1" width="10" height="10"/>
+		</g>
+		<rect x="25" y="11" class="st1" width="10" height="10"/>
+	</g>
+	<desc>LivIcons Evolution</desc>
+</g>
+<g>
+	<g>
+		<path class="st2" d="M30,89h13c1.1,0,2,0.9,2,2v8"/>
+		<rect x="41" y="99" class="st2" width="10" height="10"/>
+	</g>
+	<g>
+		<path class="st2" d="M30,89H17c-1.1,0-2,0.9-2,2v8"/>
+		<rect x="9" y="99" class="st2" width="10" height="10"/>
+	</g>
+	<g>
+		<line class="st2" x1="30" y1="81" x2="30" y2="99"/>
+		<rect x="25" y="99" class="st2" width="10" height="10"/>
+	</g>
+	<rect x="25" y="71" class="st2" width="10" height="10"/>
+</g>
+<g>
+	<g>
+		<path class="st3" d="M30,149h13c1.1,0,2,0.9,2,2v8"/>
+		<rect x="41" y="159" class="st3" width="10" height="10"/>
+	</g>
+	<g>
+		<path class="st3" d="M30,149H17c-1.1,0-2,0.9-2,2v8"/>
+		<rect x="9" y="159" class="st3" width="10" height="10"/>
+	</g>
+	<g>
+		<line class="st3" x1="30" y1="141" x2="30" y2="159"/>
+		<rect x="25" y="159" class="st3" width="10" height="10"/>
+	</g>
+	<rect x="25" y="131" class="st3" width="10" height="10"/>
+</g>
+</svg>

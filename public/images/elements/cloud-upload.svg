@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 60 120" style="enable-background:new 0 0 60 120;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#A4E7FC;}
+	.st1{fill:none;stroke:#404041;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+	.st2{clip-path:url(#SVGID_2_);}
+	.st3{fill:#007AFF;}
+	.st4{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:square;stroke-miterlimit:10;}
+	.st5{clip-path:url(#SVGID_4_);}
+</style>
+<path class="st0" d="M42.4,19.1C40.7,13.3,35.4,9,29,9c-7.7,0-14,6.3-14,14c0,0.1,0,0.1,0,0.2c-4.6,0.9-8,5-8,9.8
+	c0,5.5,4.5,10,10,10c0.2,0,0.7,0,2,0c0-5.5,4.5-10,10-10s10,4.5,10,10h2c6.6,0,12-5.4,12-12C53,24.9,48.4,19.8,42.4,19.1z"/>
+<path class="st1" d="M19,43h-2c-5.5,0-10-4.5-10-10c0-4.8,3.4-8.9,8-9.8c0-0.1,0-0.1,0-0.2c0-7.7,6.3-14,14-14
+	c6.4,0,11.7,4.3,13.4,10.1C48.4,19.8,53,24.9,53,31c0,6.6-5.4,12-12,12h-2"/>
+<g>
+	<defs>
+		<circle id="SVGID_1_" cx="29" cy="43" r="10"/>
+	</defs>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+	</clipPath>
+	<g class="st2">
+		<g>
+			<line class="st1" x1="29" y1="40.7" x2="29" y2="47"/>
+			<polyline class="st1" points="25,43 29,39 33,43 			"/>
+		</g>
+	</g>
+</g>
+<path class="st1" d="M29,33c5.5,0,10,4.5,10,10s-4.5,10-10,10s-10-4.5-10-10S23.5,33,29,33z"/>
+<path class="st3" d="M42.4,78.1C40.7,72.3,35.4,68,29,68c-7.7,0-14,6.3-14,14c0,0.1,0,0.1,0,0.2c-4.6,0.9-8,5-8,9.8
+	c0,5.5,4.5,10,10,10c0.2,0,0.7,0,2,0c0-5.5,4.5-10,10-10s10,4.5,10,10h2c6.6,0,12-5.4,12-12C53,83.9,48.4,78.8,42.4,78.1z"/>
+<path class="st4" d="M19,102h-2c-5.5,0-10-4.5-10-10c0-4.8,3.4-8.9,8-9.8c0-0.1,0-0.1,0-0.2c0-7.7,6.3-14,14-14
+	c6.4,0,11.7,4.3,13.4,10.1C48.4,78.8,53,83.9,53,90c0,6.6-5.4,12-12,12h-2"/>
+<g>
+	<defs>
+		<circle id="SVGID_3_" cx="29" cy="102" r="10"/>
+	</defs>
+	<clipPath id="SVGID_4_">
+		<use xlink:href="#SVGID_3_"  style="overflow:visible;"/>
+	</clipPath>
+	<g class="st5">
+		<g>
+			<line class="st4" x1="29" y1="99.7" x2="29" y2="106"/>
+			<polyline class="st4" points="25,102 29,98 33,102 			"/>
+		</g>
+	</g>
+</g>
+<path class="st4" d="M29,92c5.5,0,10,4.5,10,10s-4.5,10-10,10s-10-4.5-10-10S23.5,92,29,92z"/>
+</svg>

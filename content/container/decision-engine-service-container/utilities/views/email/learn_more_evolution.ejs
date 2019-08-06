@@ -1,0 +1,95 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <p>Hi <%- user.first_name %>, </p>
+      <p>We're pretty passionate about helping companies automate complex decisions.  With that in mind, we wanted to share our perspective on the evolution of decision automation - including the past, present and future.  We hope you'll find this interesting and helpful as you continue your automation journey.</p>
+    </td>
+  </tr>
+</table>
+
+<!-- body content -->
+<% include _warm_regards_with_digifi.ejs%>
+<br>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+    <td height="2" bgcolor="#ccc" style="background: #ccc"></td>
+  </tr>
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <h2 style="color: #007aff;"><b>The Evolution of Decision Automation</b></h2>
+
+      <p>Automated machine learning and improved rules management are driving the future of decision automation ☝</p>
+
+      <p>Customers want fast digital experiences and businesses want to reduce costs, making decision automation a clear choice for forward-thinking enterprises. However, automating critical and high-volume decisions has historically proven challenging.</p>
+
+      <p>Traditional approaches to decision automation were time consuming to implement and difficult to manage. Using technology to replace human judgement has obvious benefits, but most organizations – especially small and mid-sized businesses – historically lacked the significant technical and statistical expertise required to translate judgmental processes into codified business rules and predictive models.</p>
+
+      <p>The result was a wide gap in capabilities between the “haves” and “have nots”. Especially in data-intensive spaces such as insurance, banking and retail, large businesses gained significant advantages through investments in data and decisioning science, leaving smaller businesses behind.</p>
+
+      <p>We recently discussed how <a href="https://digifi.io/blog/introduction-to-automated-machine-learning-automl/">Automated Machine Learning (AutoML) Is Leveling the Playing Field</a> between large and small companies. I wanted to build upon that piece by exploring the history of decision automation and how companies are building upon recent advances in machine learning, cloud computing and user experience frameworks to drive the future of decisioning.</p>      
+
+      <p><b>The Past = Hard-Coded Decision Logic</b></p>
+
+      <p>Since the first computers were invented, people have been programming decision logic into them. In a business context, this process typically looks something like this:
+      <ul>
+      <li>Manager identifies a decision to automate and assigns the job to an analyst</li>
+      <li>Analyst creates the decision rules and workflows (often in a spreadsheet), which is then given to an IT team</li>
+      <li>IT team “hard codes” the logic directly into proprietary business applications, which execute the decision</li>
+      </ul>
+      </p>
+
+      <p>It seems straightforward, but in practice it takes most companies months or even years to go from concept to launch. Codifying decision logic is challenging, implementing it is time-consuming and multiple iterations are required to test, identify and correct issues. Numerous parties are involved, business requirements are frequently lost in translation between teams and no one has visibility into the entire process. By the time the automation is ready for release, requirements have changed multiple times and everyone is frustrated.</p>
+
+      <p>The challenges don’t end with the initial implementation. Once the logic is deployed, future adjustments are difficult, with every change requiring a similar process of planning, implementation, testing and deployment. The problem with “hard coding” the logic is that it often becomes a tangled mess of code that sits in multiple systems that are managed by different teams. Only a few people fully understand how it works and when these people leave the company, the knowledge is gone. I’ve worked on very painful projects where we spent had to spend months understanding how complex decision logic worked across multiple systems, just so that we could make a few small edits without unexpected consequences.</p>
+
+      <p>If-this-then-that logic is also very limiting. It’s great for decisions that follow a simple and understood patterns, however it doesn’t scale well to complex decisions that are impacted by many factors. For example, using hard-coded decision logic to accurately predict inventory requirements for a retailer is virtually impossible because so many variables must be considered.</p>
+
+      <p>Thankfully, a number of years ago some smart folks came up with a great solution to help address these issues – rules management systems.</p>
+
+      <p><b>The Present = Rules Management Systems</b></p>
+
+      <p>Rules management systems are technology platforms that let users manage rules and decision processes. They typically consist of a development environment (where the rules are managed) and a decision engine (which executes decisions).</p>
+
+      <p>Early rules management systems still required coding, however it was done in a more controlled environment. The logic for a given decision was centralized in the rules management platform, and anyone that could read the programming language (e.g. Java) could understand the decision process. Implementation was still time-consuming and typically required multiple teams to coordinate, however the deployment process was simplified and ongoing changes were much easier to make.</p>
+
+      <p>In recent years, companies like DigiFi have taken the concept of rules management a step further by building platforms that don’t require any coding, but instead provide visual tools for implementing and managing complex decision logic. This revolutionizes how businesses can automate decisions, because it’s now possible for “business people” to implement and deploy the logic (or, at the very least, read and understand it!). Since no coding is required, implementation is quick – work that used to take months to implement and test can often be completed in a few days. Further, the latest rules management platforms include comprehensive testing and deployment capabilities, allowing users to quickly iterate before making production-level changes.</p>
+
+      <p>Rules management systems address many of challenges that companies face when automating decision processes, however we require an additional tool – predictive analytics – to automate decisions where it isn’t feasible to create rules-based logic.</p>
+
+      <p><b>The Future = Automated Machine Learning</b></p>
+
+      <p>Rules management systems are powerful, but they still require being able to codify the logic and rules required to make a decision. In practice, that’s a greatly limiting requirement.</p>
+
+      <p>Important business decisions are often complicated. For example, when an insurance company is deciding whether to issue a policy they need to consider hundreds of variables at once. It can be impractical to boil complex decisions down to a set of rules, which is a major reason why critical decisions remain based on human judgement at many companies.</p>
+
+      <p>Predictive models help solve this problem. Rather than a human needing to identify specific rules, statistical tools can be used to build predictive models. For decisions that are influenced by many factors, this is typically the best option. However, significant expertise is typically required to build these models – and most companies do not have access to the required technical resources.</p>
+
+      <p>Automated machine learning (or AutoML) bridges this gap. The concept is simple – provide raw historical data and the AutoML learns from the prior observations to train a model that can generate future predictions. If you want to predict who will default on a loan, simply upload historical data and *voila* - you have a predictive model that can forecast the probability of default!</p>
+
+      <p>The good news – AutoML has arrived. A few major advances were required to make it a reality, including cloud computing, deep learning and a generous open-source community that makes the underlying tools widely available (e.g. TensorFlow, scikit-learn). Companies like DigiFi are now working to make automated machine learning widely available to businesses of all sizes.</p>
+
+      <p><b>Conclusion</b></p>
+
+      <p>There’s no one-size-fits-all answer to decision automation. Some situations require machine learning, others require rules management, many require both, and some simpler decisions are still best handled with hard-coded logic. The exciting news is that it’s becoming easier and easier to automate complex decision processes, which will benefit both businesses of all sizes.</p>
+      
+      <br>
+      <% const buttonLink = locals.protocol + locals.url + locals.basepath; %>
+      <%	const buttonLabel = 'Sign In To DigiFi'; %>
+      <% include _button.ejs%>
+      <br>
+    </td>
+  </tr>
+</table>
+
+<% include _styled_footer_with_unsub_from_support.ejs %>

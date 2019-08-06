@@ -1,0 +1,32 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: normal;">
+      <p>Dear <%- first_name %>,</p>
+      <p>The following organizations are associated with this email address:</p>
+      <p>
+        <ol style="list-style-type: none;margin: 0; padding: 0;">
+        <% for (var i = 0; i < organizations.length; i++) { %>
+          <li><%= organizations[i] %></li>
+        <% } %>
+        </ol>
+      </p>
+      <br>
+      <% 
+        const buttonLink = locals.protocol + locals.url + locals.basepath;
+        const buttonLabel = 'Sign In';
+      %>
+      <% include _button.ejs%>
+    </td>
+  </tr>
+</table>
+<!-- body content -->
+<% include _add_space.ejs%>
+<% include _thank_you_text.ejs%>
+<% include _styled_footer %>

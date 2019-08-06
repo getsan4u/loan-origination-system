@@ -1,0 +1,68 @@
+<% include _styled_header %>	
+<% String.prototype.capitalizeWords = function(){
+  return this.toLowerCase().replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+  });
+} %>
+<!-- body content -->
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
+      <p>Hi <%- user.first_name %>, </p>
+      <p>Automation can empower businesses to make better decisions, deliver better customer experiences and increase productivity. However, there are often so many opportunities for automation that companies often don't know where to start.</p>
+  
+      <p>DigiFi's mission is to help businesses make better automated decisions. A major component of this is providing technology that makes decision automation easy and intuitive, but we also love working closely with our customers to identify high-valueautomation opportunities and implement elegant solutions to the problem.</p>
+      
+      <p>With that in mind, we wanted to share a few common use cases of our platform. This list is not intended to be exhaustive, but instead to provide a few ideas. If you’d like to discuss your specific business in more detail, please contact our support team at support@digifi.io or (646) 663-3392. We look forward to hearing from you! </p>
+      <br>
+      <p style="color: #007aff;"><b>Common Use Cases</b></p>
+      <p>
+        <b>Credit & Insurance Underwriting</b>
+        <br>
+        Take your underwriting processes beyond traditional credit scores by combining rules-based decisioning with predictive machine learning models that analyze historical data and train models that predict defaults on future credit or insurance applications.
+      </p>
+      <p>
+        <b>Fraud Detection & Transaction Approval</b>
+        <br>
+        Evaluate applications and transactions in real-time with predictive models that accurately estimate the probability of fraud, saving you time and money while streamlining customer experiences.  Combine these models with rules-based requirements to easily manage quickly changing compliance and regulatory requirements.
+      </p>
+      <p>
+        <b>Forecasting Sales & Inventory Requirements</b>
+        <br>
+        Deploy predictive models that learn from prior sales and inventory data and accurately forecast future values.  This can be done at the SKU, category or department level and works for businesses of all types.
+      </p>
+      <p>
+        <b>Insurance Claims Management</b>
+        <br>
+        Incorporate predictive analytics across your claims management process to reduce costly manual effort by producing firm and transparent decisions, such as whether to approve, deny or manually review new insurance claims.
+      </p>
+      <p>
+        <b>Equipment Maintenance Predictions</b>
+        <br>
+        Prevent unnecessary downtime and schedule maintenance in advance with predictive models that forecast failures based on usage rates, hours, locations and other factors.
+      </p>
+      <p>
+        <b>Estimating Loan Recoveries</b>
+        <br>
+        Accurately estimating loan recoveries can be achieved with machine learning models that scan input data and accurately predict recovery rates. Further, use rules management to increase recovery rates by managing NSF, no-pay and other actions.
+      </p>
+      <p>
+        <b>Account Opening</b>
+        <br>
+        Make the right first impression with potential customers by streamlining account opening processes that include complex business logic – all while ensuring compliance with transparent rules management.
+      </p>
+      <br>
+      <% const buttonLink = locals.protocol + locals.url + locals.basepath; %>
+      <%	const buttonLabel = 'Sign In To DigiFi'; %>
+      <% include _button.ejs%>
+      <br>
+      <p>For more discussion about use cases, check out our <a href="https://digifi.io/blog">Blog</a>, which has industry-specific analysis and additional detail on common use cases.</p>
+    </td>
+  </tr>
+</table>
+
+<!-- body content -->
+<% include _add_space.ejs%>
+<% include _warm_regards_with_digifi.ejs%>
+<% include _styled_footer_with_unsub_from_support.ejs %>

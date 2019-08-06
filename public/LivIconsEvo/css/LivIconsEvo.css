@@ -1,0 +1,76 @@
+/****************************************************************************************************
+ * @name:       LivIconsEvo.css - the styles for LivIcons (Live Icons) Evolution
+ * @version:    2.3.XXX (XXX is a total number of icons)
+ * @URL:        https://livicons.com
+ * @copyright:  (c) 2013-2016 DeeThemes (http://codecanyon.net/user/DeeThemes)
+ * @licenses:   http://codecanyon.net/licenses/regular
+                http://codecanyon.net/licenses/extended
+*****************************************************************************************************/
+
+.livicon-evo-holder {
+  width: 0; /*to prevent "flickering" while rendering*/
+}
+div.livicon-evo-holder {
+  display: block;
+}
+span.livicon-evo-holder {
+  display: inline-block;
+  vertical-align: middle;
+}
+.livicon-evo-holder .lievo-svg-wrapper {
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%!important;
+  padding-bottom: 100%!important;
+  vertical-align: middle;
+  overflow: hidden!important;
+}
+.livicon-evo-holder svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden!important;
+  width: 100%!important;
+  height: 100%!important;
+}
+.livicon-evo-holder svg,
+.livicon-evo-holder svg * {
+  -webkit-box-sizing: border-box; 
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; 
+}
+.livicon-evo-error {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border: 1px solid #c94242;
+}
+.livicon-evo-error span {
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 20px;
+  margin-top: -4px;
+}
+.livicon-evo-error acronym {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  cursor:help;
+  color:#c94242;
+  border-bottom: 1px dotted #c94242;
+}
+
+/* icons size can be set via media queries */
+/*@media (max-width:480px) {
+  .livicon-evo-holder {
+    width:50px!important;
+  }
+}
+@media (min-width: 481px) {
+  .livicon-evo-holder {
+    width: 200px!important;
+  }
+}*/

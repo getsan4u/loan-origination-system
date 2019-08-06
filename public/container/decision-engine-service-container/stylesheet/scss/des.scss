@@ -1,0 +1,242 @@
+/**/
+
+@import './variables';
+@import './mixins';
+@import './base';
+@import './layout';
+@import './navigation';
+@import './controls';
+@import './buttons';
+
+/**/
+
+.visibility-hidden {
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+}
+
+
+@media screen and (min-width: 980px) {
+  .__re-bulma_container {
+    max-width: 1600px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .__re-bulma_pagination li {
+    -webkit-box-flex: none;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+  }
+  .__re-bulma_pagination>a {
+    width: auto;
+  }
+  .__re-bulma_control-label {
+    vertical-align: baseline;
+    font-family: "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-right: 20px;
+    padding-top: 7px;
+    text-align: right;
+  }
+}
+
+/****************************************************************************************************
+ * @name:       LivIconsEvo.css - the styles for LivIcons (Live Icons) Evolution
+ * @version:    2.3.XXX (XXX is a total number of icons)
+ * @URL:        https://livicons.com
+ * @copyright:  (c) 2013-2016 DeeThemes (http://codecanyon.net/user/DeeThemes)
+ * @licenses:   http://codecanyon.net/licenses/regular
+                http://codecanyon.net/licenses/extended
+*****************************************************************************************************/
+
+.livicon-evo-holder {
+  width: 0; /*to prevent "flickering" while rendering*/
+}
+div.livicon-evo-holder {
+  display: block;
+}
+span.livicon-evo-holder {
+  display: inline-block;
+  vertical-align: middle;
+}
+.livicon-evo-holder .lievo-svg-wrapper {
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%!important;
+  padding-bottom: 100%!important;
+  vertical-align: middle;
+  overflow: hidden!important;
+}
+.livicon-evo-holder svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden!important;
+  width: 100%!important;
+  height: 100%!important;
+}
+.livicon-evo-holder svg,
+.livicon-evo-holder svg * {
+  -webkit-box-sizing: border-box; 
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; 
+}
+.livicon-evo-error {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border: 1px solid #c94242;
+}
+.livicon-evo-error span {
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 20px;
+  margin-top: -4px;
+}
+.livicon-evo-error acronym {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  cursor:help;
+  color:#c94242;
+  border-bottom: 1px dotted #c94242;
+}
+
+.rc-steps .rc-steps-head,
+.rc-steps .rc-steps-title {
+  background: #f5f7fa;
+}
+.rc-steps .rc-steps-head {
+  font-weight: 700;
+}
+.rc-steps .rc-steps-title {
+  font-weight: normal;
+}
+
+.rc-steps-status-process .rc-steps-title {
+  font-weight: 700;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-head-inner {
+  border-color: #999;
+  border-width: 2px;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-head-inner>.rc-steps-icon {
+  color: $color-success;
+}
+
+.rcicon:before {
+  font-weight: 900;
+}
+
+.rc-steps .rc-steps-main {
+  margin-top: 0;
+}
+
+.rc-steps-vertical .rc-steps-tail {
+  top: -4px;
+  height: calc(100% + 8px);
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-tail>i {
+  background-color: #6d6d6d;
+  width: 2px;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-tail>i,
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-tail>i,
+.rc-steps .rc-steps-item.rc-steps-status-process .rc-steps-tail>i {
+  background-color: #6d6d6d;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-head-inner,
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-head-inner {
+  border-color: #6d6d6d;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-process .rc-steps-description,
+.rc-steps .rc-steps-item.rc-steps-status-process .rc-steps-title {
+  color: $color-primary;
+}
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-description,
+.rc-steps .rc-steps-item.rc-steps-status-finish .rc-steps-title,
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-head-inner>.rc-steps-icon,
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-description,
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-title {
+  color: #6d6d6d;
+}
+
+.rc-steps-vertical .rc-steps-main {
+  min-height: 55px;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-process .rc-steps-head-inner {
+  border-color: $color-primary;
+  background-color: $color-primary;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-head-inner {
+  border-width: 2px;
+}
+
+.rc-steps .rc-steps-item.rc-steps-status-wait .rc-steps-tail>i,
+.rc-steps .rc-steps-item.rc-steps-status-process .rc-steps-tail>i {
+  width: 2px;
+}
+
+.rcicon:before {
+  font-family: Checkbox!important;
+}
+
+.rcicon-check:before {
+  content: "\E800";
+}
+
+.rc-steps .rc-steps-head-inner>.rc-steps-icon.rcicon {
+  top: -1px;
+}
+
+
+svg path#progress-path {
+  animation: progress 1s ease forwards;
+}
+svg #progress-marker {
+  transform-origin: 150px 150px;
+  transform: rotate(0deg);
+  transition: transform 1s ease;
+}
+
+
+.__cis_empty_score_chart_container {
+  height: 50px !important;
+}
+
+.__cis_score_chart_no_data {
+  margin: -40% 0 0 20% !important;
+}
+.__cis_empty_score_chart .recharts-surface{
+  display: none
+}
+
+.__ra_rb.los-input-link{
+  vertical-align: initial;
+}
+

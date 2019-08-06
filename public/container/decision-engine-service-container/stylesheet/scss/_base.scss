@@ -1,0 +1,276 @@
+@import './variables';
+html {}
+
+#root {
+  min-width: 1080px;
+}
+
+body {
+  overflow-y: scroll;
+  overflow-x: auto;
+  color: $color-default-text;
+  background: $color-default-text;
+}
+
+.__reactapp_body_loaded #root,
+.__reactapp_body_loaded div[data-reactroot] {
+  min-height: 100%;
+  height: auto;
+}
+
+.__reactapp_overlay {
+}
+
+.reactapp__main {
+  min-width: 1080px;
+  min-height: calc( 100vh - 130px);
+  display: flex;
+  flex-direction: column;
+  flex-flow: column;
+}
+
+// #_auth_sign-in,
+// #_auth_password-reset,
+// #_auth_organization-recovery,
+// #_auth_create-account {
+//   .reactapp__main {
+//     min-height: calc( 100vh - 60px);
+//   }
+// }
+
+.__re-bulma_container.login {
+  min-height: calc( 100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reactapp__app_div_content {
+  position: relative;
+}
+
+.reactapp__app_footer {
+  display: block !important;
+}
+
+.__re-bulma_columns.reactapp__main_container {
+  margin: 0;
+  flex: 1 1 auto;
+}
+
+.reactapp__main_content.__re-bulma_column {
+  padding: 0;
+  max-width: 100%;
+}
+
+body.__reactapp_body_loaded nav.__re-bulma_nav {
+  position: relative;
+  bottom: 0;
+}
+
+body nav.__re-bulma_nav {
+  position: absolute;
+  bottom: 0;
+}
+
+body,
+body.__reactapp_body_loaded,
+.__re-bulma_modal-card-body,
+.__re-bulma_modal-card-foot,
+.__re-bulma_nav,
+.__re-bulma_nav-center,
+.__re-bulma_nav-item,
+.__re-bulma_nav-left,
+.__re-bulma_nav-menu,
+.__re-bulma_nav-right,
+.__re-bulma_nav>.__re-bulma_container,
+.__re-bulma_button,
+.__re-bulma_card-content,
+.__re-bulma_card-footer .__re-bulma_card-header-icon,
+.__re-bulma_card-footer-item,
+.__re-bulma_card-header-title,
+.__re-bulma_card .__re-bulma_card-header,
+.__re-bulma_box,
+.__re-bulma_button,
+.__re-bulma_content,
+.__re-bulma_control-label,
+p.__re-bulma_subtitle,
+p.__re-bulma_title,
+input.__re-bulma_input,
+textarea.__re-bulma_textarea,
+.__re-bulma_select,
+.__re-bulma_modal-card-body,
+.__re-bulma_modal-card-foot,
+.__re-bulma_modal-card-head {
+  font-family: $font-global;
+}
+
+.__re-bulma_modal-card-body,
+.__re-bulma_modal-card-foot,
+.__re-bulma_modal-card-head {
+  padding: 30px;
+}
+
+.__re-bulma_hero.__re-bulma_is-white .__re-bulma_nav-item a:not(.__re-bulma_button),
+.__re-bulma_hero.__re-bulma_is-white a.__re-bulma_nav-item,
+.__re-bulma_hero.__re-bulma_is-white,
+.__cis_form_wrapper,
+.__re-bulma_content,
+.__re-bulma_card-content, .__re-bulma_card-footer .__re-bulma_card-header-icon, .__re-bulma_card-footer-item, .__re-bulma_card-header-title, .__re-bulma_cardm .__re-bulma_card-header,
+.__re-bulma_label,
+.__re-bulma_card-header-title h2,
+.__re-bulma_modal-card-body,
+.__re-bulma_modal-card-foot,
+.__re-bulma_nav,
+.__re-bulma_nav-center,
+.__re-bulma_nav-item,
+.__re-bulma_nav-left,
+.__re-bulma_nav-menu,
+.__re-bulma_nav-right,
+.__re-bulma_nav>.__re-bulma_container,
+.__re-bulma_input,
+.__re-bulma_textarea,
+.__re-bulma_modal-card-title,
+.__re-bulma_select select,
+.__re-bulma_content h1,
+.__re-bulma_content h2,
+.__re-bulma_content h3,
+.__re-bulma_content h4,
+.__re-bulma_content h5,
+.__re-bulma_content h6,
+.ui.checkbox+label, 
+.ui.checkbox label  {
+  color: $color-default-text;
+}
+
+.reactapp__main .login .__re-bulma_label {
+  font-weight: normal;
+}
+
+.__re-bulma_title.__re-bulma_is-2 code,
+.__re-bulma_title.__re-bulma_is-3 {
+  font-weight: 500;
+}
+
+.__re-bulma_title {
+  color: inherit;
+}
+
+.__re-bulma_subtitle em,
+.__re-bulma_subtitle span,
+.__re-bulma_title em,
+.__re-bulma_title span {
+  font-weight: inherit;
+}
+
+.__re-bulma_modal-card-body,
+.__re-bulma_modal-card-foot,
+.__re-bulma_nav,
+.__re-bulma_nav-center,
+.__re-bulma_nav-item,
+.__re-bulma_nav-left,
+.__re-bulma_nav-menu,
+.__re-bulma_nav-right,
+.__re-bulma_nav>.__re-bulma_container,
+.__re-bulma_content,
+.__re-bulma_content abbr,
+.__re-bulma_content address,
+.__re-bulma_content article,
+.__re-bulma_content aside,
+.__re-bulma_content audio,
+.__re-bulma_content b,
+.__re-bulma_content blockquote,
+.__re-bulma_content caption,
+.__re-bulma_content cite,
+.__re-bulma_content code,
+.__re-bulma_content dd,
+.__re-bulma_content del,
+.__re-bulma_content details,
+.__re-bulma_content dfn,
+.__re-bulma_content div,
+.__re-bulma_content dl,
+.__re-bulma_content dt,
+.__re-bulma_content em,
+.__re-bulma_content fieldset,
+.__re-bulma_content figure,
+.__re-bulma_content footer,
+.__re-bulma_content form,
+.__re-bulma_content h1,
+.__re-bulma_content h2,
+.__re-bulma_content h3,
+.__re-bulma_content h4,
+.__re-bulma_content h5,
+.__re-bulma_content h6,
+.__re-bulma_content header,
+.__re-bulma_content i,
+.__re-bulma_content iframe,
+.__re-bulma_content img,
+.__re-bulma_content ins,
+.__re-bulma_content kbd,
+.__re-bulma_content label,
+.__re-bulma_content legend,
+.__re-bulma_content li,
+.__re-bulma_content mark,
+.__re-bulma_content menu,
+.__re-bulma_content nav,
+.__re-bulma_content object,
+.__re-bulma_content ol,
+.__re-bulma_content p,
+.__re-bulma_content pre,
+.__re-bulma_content q,
+.__re-bulma_content samp,
+.__re-bulma_content section,
+.__re-bulma_content small,
+.__re-bulma_content span,
+.__re-bulma_content strong,
+.__re-bulma_content sub,
+.__re-bulma_content summary,
+.__re-bulma_content sup,
+.__re-bulma_content table,
+.__re-bulma_content tbody,
+.__re-bulma_content td,
+.__re-bulma_content tfoot,
+.__re-bulma_content th,
+.__re-bulma_content thead,
+.__re-bulma_content time,
+.__re-bulma_content tr,
+.__re-bulma_content ul,
+.__re-bulma_content var,
+.__re-bulma_content video {
+  font-size: 14px;
+}
+
+
+/* Remove default re-bulma mobile breakpoints 
+*/
+
+.__re-bulma_columns {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.__re-bulma_control.__re-bulma_is-horizontal {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.__re-bulma_column.__re-bulma_is-narrow, .__re-bulma_column.__re-bulma_is-narrow-tablet {
+    -webkit-box-flex: 0;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+}
+
+.__re-bulma_nav-menu {
+    background-color: transparent !important;
+    box-shadow: unset;
+    left: unset;
+    display: inherit;
+    right: unset;
+    top: unset;
+    position: relative;
+}

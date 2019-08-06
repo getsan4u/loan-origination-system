@@ -1,0 +1,15 @@
+{
+  "periodicjs_ext_reactapp": {
+    "manifests": [],
+    "unauthenticated_manifests": [],
+    "navigation": false,
+    "components": {
+      "login": false,
+      "main": {},
+      "error": {
+        "400": false,
+        "404": false
+      }
+    }
+  }
+}

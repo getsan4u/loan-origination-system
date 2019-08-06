@@ -1,0 +1,39 @@
+@mixin customColorButton($color) {
+  color: $color;
+  fill: $color;
+  &:hover {
+    background-color: $color;
+    color: #fff;
+    fill: #fff;
+    &>p {
+      color: #fff !important;
+    }
+  }
+}
+
+@mixin customColorButton_nohover($color) {
+  color: $color;
+  fill: $color;
+}
+
+@mixin defaultSuccessButton() {
+  background-color: white;
+  border: none;
+  color: $color-green;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+  border-radius: 5px;
+  min-width: 150px;
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 36px;
+  font-size: 13px;
+  text-transform: uppercase;
+  &:hover,
+  &.__re-bulma_is-active {
+    background-color: $color-green !important;
+    border-color: $color-green;
+    color: white; 
+  }
+}
